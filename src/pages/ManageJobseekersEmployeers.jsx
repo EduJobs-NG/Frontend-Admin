@@ -305,7 +305,7 @@ export const ManageJobseekersEmployeers = ({ title }) => {
 
   useEffect(() => {
     if (success) {
-      const newData = gottenData.map((data, index) => {
+      const newData = gottenData?.map((data, index) => {
         return {
           id: index + 1,
           name: `${data.user.first_name ? data.user.first_name : ""} ${

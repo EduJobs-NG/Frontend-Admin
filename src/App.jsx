@@ -20,6 +20,10 @@ function App() {
           <Route element={<RequireAuth />}>
             <Route index element={<Dashboard setPageTitle={setPageTitle} />} />
             <Route
+              path="dashboard"
+              element={<Dashboard setPageTitle={setPageTitle} />}
+            />
+            <Route
               path=":page"
               element={<Page setPageTitle={setPageTitle} />}
             />

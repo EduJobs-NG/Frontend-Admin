@@ -5,10 +5,10 @@ const useLogout = () => {
   const { setAuth } = useAuth();
 
   const logout = async () => {
-    setAuth({});
+    setAuth("");
 
     try {
-      const response = await axios("/admin/logout");
+      await axios("/admin/logout");
     } catch (error) {
       console.error(error);
     }

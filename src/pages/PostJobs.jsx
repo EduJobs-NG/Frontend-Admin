@@ -80,17 +80,17 @@ export const PostJobs = ({ setPageTitle }) => {
             className="px-[15px] h-[50px] bg-[#FBFBFB] rounded-[9px] outline-none border-[1px] border-solid border-[#808080]"
           />
         </div>
-        <div className="flex flex-col gap-[10px]">
+        <div className="flex justify-center gap-[10px] mt-[84px]">
           <button
             type="submit"
-            className="text-[14px] font-[700] leading-6 tracking-[-0.006em] bg-[#02378B] rounded-[3px] text-[#fff] mt-[84px] px-[53px] py-[13px]"
+            className="text-[14px] font-[700] leading-6 tracking-[-0.006em] bg-[#02378B] rounded-[3px] text-[#fff] px-[53px] py-[13px]"
           >
             POST JOB
           </button>
           <button
             onClick={() => navigate("/jobs")}
             type="submit"
-            className="text-[14px] font-[700] leading-6 tracking-[-0.006em] bg-[#808080] rounded-[3px] text-[#222] mt-[84px] px-[53px] py-[13px]"
+            className="text-[14px] font-[700] leading-6 tracking-[-0.006em] bg-[#808080] rounded-[3px] text-[#222] px-[53px] py-[13px]"
           >
             CANCEL
           </button>

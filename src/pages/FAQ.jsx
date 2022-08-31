@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import useAxios from "../hooks/useAxios";
 import { WrapperHeader } from "../components/WrapperHeader";
 import { LoadingIndicator } from "../components/LoadingIndicator";
@@ -13,6 +14,8 @@ export const FAQ = () => {
   const [showForm, setShowForm] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const getFaqs = useAxios();
   const postFaqs = useAxios();
@@ -26,17 +29,11 @@ export const FAQ = () => {
     data: getFaqData,
   } = getFaqs();
 
-  const {
-    makeRequest,
-    isLoading,
-    success,
-    errorMessage,
-    setErrorMessage,
-    data,
-  } = postFaqs();
+  const { makeRequest, isLoading, success, errorMessage, setErrorMessage } =
+    postFaqs();
 
   useEffect(() => {
-    makeRequest({ url: "/faqs/" });
+    getAllFaqs({ url: "/faqs/" });
   }, []);
 
   useEffect(() => {
@@ -69,9 +66,26 @@ export const FAQ = () => {
   if (getFaqsErrorMessage)
     return <ErrorIndicator error={getFaqsErrorMessage} />;
 
+  const handleNext = () => {
+    const newPage = currentPage + 1;
+
+    setCurrentPage(newPage);
+    setSearchParams({ page: newPage });
+    getAllFaqs({ url: getFaqData.next });
+  };
+
+  const handleBack = () => {
+    const newPage = currentPage - 1;
+
+    setCurrentPage(newPage);
+    if (newPage === 1) setSearchParams({});
+    else setSearchParams({ page: newPage });
+    getAllFaqs({ url: getFaqData.previous });
+  };
+
   return (
     gotFaqsSuccessfully && (
-      <div className="bg-[#fff] rounded-[30px] pb-[41px] h-[100%]">
+      <div className="flex flex-col bg-[#fff] rounded-[30px] pb-[41px] h-[100%]">
         <div className="relative flex justify-between items-center">
           <WrapperHeader title="FAQ" />
           <button
@@ -152,6 +166,27 @@ export const FAQ = () => {
               )}
             </div>
           ))}
+        </div>
+
+        <div className="flex justify-between items-center px-[80px] mt-[40px] mt-[auto]">
+          <button
+            onClick={handleBack}
+            className={`text-[#303030] text-[12px] font-[700] leading-6 bg-[#E6E6E6] rounded-[14px] px-[30px] py-[3px] tracking-[-0.006em] ${
+              getFaqData.previous ? "cursor-pointer" : " cursor-not-allowed"
+            }`}
+            disabled={!getFaqData.previous}
+          >
+            Back
+          </button>
+          <button
+            onClick={handleNext}
+            className={`text-[#fff] text-[12px] font-[700] leading-6 bg-[#02378B] rounded-[14px] px-[30px] py-[3px] tracking-[-0.006em] ${
+              getFaqData.next ? "cursor-pointer" : " cursor-not-allowed"
+            }`}
+            disabled={!getFaqData.next}
+          >
+            Next
+          </button>
         </div>
       </div>
     )
