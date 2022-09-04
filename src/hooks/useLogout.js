@@ -2,13 +2,15 @@ import axios from "../api/axios";
 import useAuth from "./useAuth";
 
 const useLogout = () => {
-  const { setAuth } = useAuth();
+  const { setAuth, setPersist } = useAuth();
 
   const logout = async () => {
-    setAuth("");
+    setAuth({});
+    setPersist(false);
+    localStorage.removeItem("refresh");
 
     try {
-      await axios("/admin/logout");
+      const x = await axios("/admin/logout");
     } catch (error) {
       console.error(error);
     }
