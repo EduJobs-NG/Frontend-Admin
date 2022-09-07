@@ -218,67 +218,72 @@ export const FAQ = () => {
         </div>
 
         <div className="flex flex-col gap-[23px] px-[80px] grow">
-          {getFaqData.results.map((faq, index) => (
-            <div key={index}>
-              <div className="flex justify-between gap-[40px] items-center py-[5px]">
-                <h2
-                  onClick={() => handleClick(faq.id)}
-                  className="grow text-[14px] font-[700] leading-[18px] text-[#000] text-start cursor-pointer"
-                >
-                  {faq.question}
-                </h2>
-                <div className="flex items-center">
-                  <div className="flex items-center gap-[15px] mr-[40px]">
-                    <p
-                      className="text-[#333] px-[10px] py-[1px] text-[14px] font-[700] leading-6 cursor-pointer"
-                      onClick={() => {
-                        setShowForm(!showForm);
-                        setShowFormAction("edit");
-                        setToEditId(faq.id);
-                        setQuestion(faq.question);
-                        setAnswer(faq.answer);
-                      }}
-                    >
-                      Edit
-                    </p>
-                    <p
-                      className="text-[#C90415] px-[10px] py-[1px] text-[14px] font-[700] leading-6 cursor-pointer"
-                      onClick={() => {
-                        setShowAlert(true);
-                        setToDeleteId(faq.id);
-                        setShowForm(false);
-                      }}
-                    >
-                      Delete
-                    </p>
-                  </div>
-
-                  <div
-                    className="p-[10px] cursor-pointer"
+          {getFaqData.results.length ? (
+            getFaqData.results.map((faq, index) => (
+              <div key={index}>
+                <div className="flex justify-between gap-[40px] items-center py-[5px]">
+                  <h2
                     onClick={() => handleClick(faq.id)}
+                    className="grow text-[14px] font-[700] leading-[18px] text-[#000] text-start cursor-pointer"
                   >
-                    <img
-                      src={currentFaqId === faq.id ? close : open}
-                      alt="icon"
-                    />
+                    {faq.question}
+                  </h2>
+                  <div className="flex items-center">
+                    <div className="flex items-center gap-[15px] mr-[40px]">
+                      <p
+                        className="text-[#333] px-[10px] py-[1px] text-[14px] font-[700] leading-6 cursor-pointer"
+                        onClick={() => {
+                          setShowForm(!showForm);
+                          setShowFormAction("edit");
+                          setToEditId(faq.id);
+                          setQuestion(faq.question);
+                          setAnswer(faq.answer);
+                        }}
+                      >
+                        Edit
+                      </p>
+                      <p
+                        className="text-[#C90415] px-[10px] py-[1px] text-[14px] font-[700] leading-6 cursor-pointer"
+                        onClick={() => {
+                          setShowAlert(true);
+                          setToDeleteId(faq.id);
+                          setShowForm(false);
+                        }}
+                      >
+                        Delete
+                      </p>
+                    </div>
+
+                    <div
+                      className="p-[10px] cursor-pointer"
+                      onClick={() => handleClick(faq.id)}
+                    >
+                      <img
+                        src={currentFaqId === faq.id ? close : open}
+                        alt="icon"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {faq.id === currentFaqId && (
-                <div
-                  className="grid gap-[13px] mt-[9px]"
-                  style={{
-                    gridTemplateColumns: "repeat(auto-fit, minmax(10em, 1fr))",
-                  }}
-                >
-                  <p className="text-[14px] font-[400] leading-[18px] text-[#000] mb-[-18px] px-[22px]">
-                    {faq.answer}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
+                {faq.id === currentFaqId && (
+                  <div
+                    className="grid gap-[13px] mt-[9px]"
+                    style={{
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(10em, 1fr))",
+                    }}
+                  >
+                    <p className="text-[14px] font-[400] leading-[18px] text-[#000] mb-[-18px] px-[22px]">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <ErrorIndicator error="No FAQ's" />
+          )}
         </div>
 
         <div className="flex justify-between items-center px-[80px] mt-[auto] pt-[40px]">
