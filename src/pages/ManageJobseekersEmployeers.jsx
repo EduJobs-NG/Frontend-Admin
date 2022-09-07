@@ -12,13 +12,22 @@ import search from "../assets/search-chat.svg";
 import remove from "../assets/delete.svg";
 import chat from "../assets/chat.svg";
 
-const ManageJobseekersEmployeersTable = ({ tableData, title }) => {
-  const [toDeleteId, setToDeleteId] = useState(null);
+const ManageJobseekersEmployeersTable = ({ tableData, title, setRefetch }) => {
+  const [toDeleteDetail, setToDeleteDetail] = useState(null);
   const [isPositive, setIsPositive] = useState(null);
-  const [deleteName, setDeleteName] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const columns = useMemo(() => MANAGE_COLUMNS, []);
   const data = useMemo(() => tableData, []);
+
+  const deleteData = useAxios();
+
+  const {
+    makeRequest,
+    isLoading,
+    errorMessage,
+    success,
+    data: gottenData,
+  } = deleteData();
 
   const {
     getTableProps,
@@ -43,22 +52,33 @@ const ManageJobseekersEmployeersTable = ({ tableData, title }) => {
   );
 
   useEffect(() => {
-    if (isPositive === "yes") return;
-    else if (isPositive === "no") {
+    if (isPositive === "yes") {
+      makeRequest({
+        url:
+          title === "Manage Jobseekers"
+            ? `/jobseekers/user-document-review/${toDeleteDetail.userId}`
+            : `/employer/user-profile-review/${toDeleteDetail.userId}`,
+        method: "DELETE",
+        payload: { id: toDeleteDetail.userId },
+      });
+    } else {
       setShowAlert(false);
-      setToDeleteId(null);
-      setDeleteName(null);
+      setToDeleteDetail(null);
       setIsPositive(null);
     }
   }, [isPositive]);
 
-  const handleDelete = () => {};
+  useEffect(() => {
+    if (success) setTimeout(() => setRefetch((prev) => prev + 1), 0);
+  }, [success]);
 
-  const handleDeleteConfirmation = (id) => {
-    setToDeleteId(id);
-    setDeleteName();
+  const handleDeleteConfirmation = (detail) => {
+    setToDeleteDetail(detail);
     setShowAlert(true);
   };
+
+  if (isLoading) return <LoadingIndicator />;
+  if (errorMessage) return <ErrorIndicator errorMessage={errorMessage} />;
 
   return (
     <div className="flex flex-col bg-[#fff] rounded-[30px] pb-[44px] px-[28px] h-[100%]">
@@ -138,7 +158,8 @@ const ManageJobseekersEmployeersTable = ({ tableData, title }) => {
                         <button
                           className="flex items-center gap-[5px] text-[#C90415]"
                           onClick={() =>
-                            handleDeleteConfirmation(cell.row.original.userId)
+                            // handleDeleteConfirmation(cell.row.original.userId)
+                            handleDeleteConfirmation(cell.row.original)
                           }
                         >
                           <img src={remove} alt="remove icon" />
@@ -272,7 +293,9 @@ const ManageJobseekersEmployeersTable = ({ tableData, title }) => {
           <div>
             <Alert
               title="DELETE"
-              text="Are you sure you want to delete, it can't be reversed?"
+              text={`Are you sure you want to delete ${
+                toDeleteDetail.name.trim() ? toDeleteDetail.name : "this user"
+              }?, it can't be reversed?`}
               setIsPositive={setIsPositive}
             />
           </div>
@@ -285,6 +308,7 @@ const ManageJobseekersEmployeersTable = ({ tableData, title }) => {
 export const ManageJobseekersEmployeers = ({ title }) => {
   const [tableData, setTableData] = useState([]);
   const getData = useAxios();
+  const [refetch, setRefetch] = useState(0);
 
   const {
     makeRequest,
@@ -298,14 +322,14 @@ export const ManageJobseekersEmployeers = ({ title }) => {
     makeRequest({
       url:
         title === "Manage Jobseekers"
-          ? "/jobseekers/user-profile-review/"
+          ? "/jobseekers/user-document-review/"
           : "/employer/user-profile-review/",
     });
-  }, []);
+  }, [refetch]);
 
   useEffect(() => {
     if (success) {
-      const newData = gottenData?.map((data, index) => {
+      const newData = gottenData?.results?.map((data, index) => {
         return {
           id: index + 1,
           name: `${data.user.first_name ? data.user.first_name : ""} ${
@@ -326,8 +350,12 @@ export const ManageJobseekersEmployeers = ({ title }) => {
   if (errorMessage) return <ErrorIndicator error={errorMessage} />;
 
   return tableData.length ? (
-    <ManageJobseekersEmployeersTable tableData={tableData} title={title} />
+    <ManageJobseekersEmployeersTable
+      tableData={tableData}
+      title={title}
+      setRefetch={setRefetch}
+    />
   ) : (
-    <></>
+    <ErrorIndicator error="No Data" />
   );
 };

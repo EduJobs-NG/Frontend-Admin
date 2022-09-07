@@ -43,24 +43,30 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
   useEffect(() => {
     makeVerifiedRequest({
       url: `/${
-        title === "Jobseekers Documents" ? "jobseekers" : "employer"
-      }/user-profile-review/verified/`,
+        title === "Jobseekers Documents"
+          ? "jobseekers/user-document-review"
+          : "employer/user-profile-review"
+      }/verified/`,
     });
     makeDeclinedRequest({
       url: `/${
-        title === "Jobseekers Documents" ? "jobseekers" : "employer"
-      }/user-profile-review/declined/`,
+        title === "Jobseekers Documents"
+          ? "jobseekers/user-document-review"
+          : "employer/user-profile-review"
+      }/declined/`,
     });
     makePendingRequest({
       url: `/${
-        title === "Jobseekers Documents" ? "jobseekers" : "employer"
-      }/user-profile-review/pending/`,
+        title === "Jobseekers Documents"
+          ? "jobseekers/user-document-review"
+          : "emplemployer/user-profile-reviewoyer"
+      }/pending/`,
     });
   }, []);
 
   useEffect(() => {
     if (pendingSuccess) {
-      const newData = pendingData.map((data, index) => {
+      const newData = pendingData?.results?.map((data, index) => {
         return {
           id: index + 1,
           name: `${data.user.first_name ? data.user.first_name : ""} ${
@@ -80,7 +86,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
 
   useEffect(() => {
     if (verifiedSuccess) {
-      const newData = verifiedData.map((data, index) => {
+      const newData = verifiedData?.results?.map((data, index) => {
         return {
           id: index + 1,
           name: `${data.user.first_name ? data.user.first_name : ""} ${
@@ -100,7 +106,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
 
   useEffect(() => {
     if (declinedSuccess) {
-      const newData = declinedData.map((data, index) => {
+      const newData = declinedData?.results?.map((data, index) => {
         return {
           id: index + 1,
           name: `${data.user.first_name ? data.user.first_name : ""} ${
@@ -173,7 +179,11 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
             </div>
 
             {tableToDisplay === option.text ? (
-              <JobseekersEmployeesDocument tableData={option.data} />
+              option.data ? (
+                <JobseekersEmployeesDocument tableData={option.data} />
+              ) : (
+                <p className="font-[700] ml-[80px] pb-[10px]">No Data</p>
+              )
             ) : null}
           </div>
         ))}

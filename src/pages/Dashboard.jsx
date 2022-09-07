@@ -124,6 +124,8 @@ export const Dashboard = ({ setPageTitle }) => {
     },
   };
 
+  console.log(dashboardData);
+
   const labels = [
     "Jan",
     "Feb",
