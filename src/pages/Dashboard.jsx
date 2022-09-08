@@ -24,7 +24,9 @@ import {
 import { Bar } from "react-chartjs-2";
 
 export const Dashboard = ({ setPageTitle }) => {
-  setPageTitle("Dashboard");
+  useEffect(() => {
+    setPageTitle("Dashboard");
+  }, []);
 
   const getDashbordData = useAxios();
   const {
@@ -123,8 +125,6 @@ export const Dashboard = ({ setPageTitle }) => {
       },
     },
   };
-
-  console.log(dashboardData);
 
   const labels = [
     "Jan",

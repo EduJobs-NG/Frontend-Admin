@@ -7,7 +7,7 @@ export const Layout = ({ pageTitle }) => {
   const { page } = useParams();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex">
       {page === "login" ? (
         <main className="bg-[#D9D9D9] grow">
           <Outlet />
@@ -22,7 +22,7 @@ export const Layout = ({ pageTitle }) => {
       ) : (
         <>
           <Sidebar pageTitle={pageTitle} />
-          <div className="flex flex-col grow">
+          <div className="flex flex-col w-[100%]">
             <Header pageTitle={pageTitle} />
             <main className="bg-[#D9D9D9] px-[45px] py-[25px] grow">
               <Outlet />

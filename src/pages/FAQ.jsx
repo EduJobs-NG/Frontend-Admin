@@ -159,12 +159,16 @@ export const FAQ = () => {
         <div className="relative flex justify-between items-center">
           <WrapperHeader title="FAQ" />
           <button
-            className="flex items-center gap-[9px] bg-[#02378B] rounded-[19px] text-[#fff] px-[20px] py-[1px] mr-[20px] text-[10px] font-[700] leading-6"
+            className={`flex items-center gap-[9px] bg-[#02378B] rounded-[19px] text-[#fff] px-[20px] py-[1px] mr-[20px] text-[10px] font-[700] leading-6 ${
+              showForm ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
+            disabled={showForm}
             onClick={() => {
-              setShowForm(!showForm);
+              setShowForm(true);
               setShowFormAction("add");
               setQuestion("");
               setAnswer("");
+              setErrorMessage("");
             }}
           >
             <img src={add} alt="add icon" />
@@ -208,9 +212,22 @@ export const FAQ = () => {
                 {errorMessage && errorMessage}
               </p>
 
-              <div className="text-center">
-                <button className="text-[12px] font-[700] leading-6 text-[#fff] rounded-[19px] px-[36px] py-[4px] bg-[#02378B]">
+              <div className="flex items-center justify-center gap-[25px] text-center">
+                <button
+                  onClick={(e) => handleSubmit(e, showFormAction)}
+                  className="text-[12px] font-[700] leading-6 text-[#fff] rounded-[19px] px-[36px] py-[4px] bg-[#02378B]"
+                >
                   {isLoading || deletingFaq ? "POSTING" : "POST"}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowForm(false);
+                    setQuestion("");
+                    setAnswer("");
+                  }}
+                  className="text-[12px] font-[700] leading-6 text-[#C90415] px-[5px] py-[4px]"
+                >
+                  CANCEL
                 </button>
               </div>
             </form>
@@ -230,10 +247,13 @@ export const FAQ = () => {
                   </h2>
                   <div className="flex items-center">
                     <div className="flex items-center gap-[15px] mr-[40px]">
-                      <p
-                        className="text-[#333] px-[10px] py-[1px] text-[14px] font-[700] leading-6 cursor-pointer"
+                      <button
+                        disabled={showForm}
+                        className={`text-[#333] px-[10px] py-[1px] text-[14px] font-[700] leading-6 ${
+                          showForm ? "cursor-not-allowed" : "cursor-pointer"
+                        }`}
                         onClick={() => {
-                          setShowForm(!showForm);
+                          setShowForm(true);
                           setShowFormAction("edit");
                           setToEditId(faq.id);
                           setQuestion(faq.question);
@@ -241,7 +261,7 @@ export const FAQ = () => {
                         }}
                       >
                         Edit
-                      </p>
+                      </button>
                       <p
                         className="text-[#C90415] px-[10px] py-[1px] text-[14px] font-[700] leading-6 cursor-pointer"
                         onClick={() => {
@@ -282,29 +302,29 @@ export const FAQ = () => {
               </div>
             ))
           ) : (
-            <ErrorIndicator error="No FAQ's" />
+            <div className="flex justify-center items-center h-[100%]">
+              <p className="text-[20px] font-[700]">No FAQ's</p>
+            </div>
           )}
         </div>
 
-        <div className="flex justify-between items-center px-[80px] mt-[auto] pt-[40px]">
-          <button
-            onClick={handleBack}
-            className={`text-[#303030] text-[12px] font-[700] leading-6 bg-[#E6E6E6] rounded-[14px] px-[30px] py-[3px] tracking-[-0.006em] ${
-              getFaqData.previous ? "cursor-pointer" : " cursor-not-allowed"
-            }`}
-            disabled={!getFaqData.previous}
-          >
-            Back
-          </button>
-          <button
-            onClick={handleNext}
-            className={`text-[#fff] text-[12px] font-[700] leading-6 bg-[#02378B] rounded-[14px] px-[30px] py-[3px] tracking-[-0.006em] ${
-              getFaqData.next ? "cursor-pointer" : " cursor-not-allowed"
-            }`}
-            disabled={!getFaqData.next}
-          >
-            Next
-          </button>
+        <div className="flex justify-between items-center px-[80px] mt-[auto] pt-[40px] w-[100%]">
+          {getFaqData.previous && (
+            <button
+              onClick={handleBack}
+              className="text-[#303030] text-[12px] font-[700] leading-6 bg-[#E6E6E6] rounded-[14px] px-[30px] py-[3px] tracking-[-0.006em] cursor-pointer"
+            >
+              Back
+            </button>
+          )}
+          {getFaqData.next && (
+            <button
+              onClick={handleNext}
+              className="text-[#fff] text-[12px] font-[700] leading-6 bg-[#02378B] rounded-[14px] px-[30px] py-[3px] tracking-[-0.006em] cursor-pointer ml-[auto]"
+            >
+              Next
+            </button>
+          )}
         </div>
 
         {showAlert && (

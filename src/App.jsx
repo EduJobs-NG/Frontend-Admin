@@ -16,24 +16,21 @@ function App() {
       <Route path="/login" element={<Login />} />
 
       <Route path="/" element={<Layout pageTitle={pageTitle} />}>
-        <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth />}>
-            <Route index element={<Dashboard setPageTitle={setPageTitle} />} />
-            <Route
-              path="dashboard"
-              element={<Dashboard setPageTitle={setPageTitle} />}
-            />
-            <Route
-              path=":page"
-              element={<Page setPageTitle={setPageTitle} />}
-            />
+        {/* <Route element={<PersistLogin />}> */}
+        <Route element={<RequireAuth />}>
+          <Route index element={<Dashboard setPageTitle={setPageTitle} />} />
+          <Route
+            path="dashboard"
+            element={<Dashboard setPageTitle={setPageTitle} />}
+          />
+          <Route path=":page" element={<Page setPageTitle={setPageTitle} />} />
 
-            <Route
-              path="jobs/post-jobs"
-              element={<PostJobs setPageTitle={setPageTitle} />}
-            />
-          </Route>
+          <Route
+            path="jobs/post-jobs"
+            element={<PostJobs setPageTitle={setPageTitle} />}
+          />
         </Route>
+        {/* </Route> */}
       </Route>
     </Routes>
   );

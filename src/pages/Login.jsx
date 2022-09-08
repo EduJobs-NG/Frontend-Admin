@@ -40,7 +40,9 @@ export const Login = () => {
     setErrorMessage("");
   }, [email, password]);
 
-  useEffect(() => localStorage.setItem("persist", persist), [persist]);
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   useEffect(() => {
     passwordRef.current.selectionStart = passwordRef.current.value.length;
@@ -58,7 +60,8 @@ export const Login = () => {
       const refreshToken = data.refresh;
 
       setAuth({ email, accessToken });
-      localStorage.setItem("refresh", refreshToken);
+      if (persist === "yes") localStorage.setItem("refresh", refreshToken);
+      else sessionStorage.setItem("refresh", refreshToken);
 
       setEmail("");
       setPassword("");
@@ -215,21 +218,24 @@ export const Login = () => {
                 type="checkbox"
                 id="remember-me"
                 name="remember-me"
-                defaultChecked={persist}
-                // onChange={() => setPersist((prev) => !prev)}
+                defaultChecked={persist === "yes" ? true : false}
                 className="relative z-[-9999]"
               />
 
               <div
                 className="absolute left-[0] cursor-pointer"
-                // onClick={() => setPersist((prev) => !prev)}
+                onClick={() =>
+                  setPersist(() => (persist === "yes" ? "no" : "yes"))
+                }
               >
-                <CheckboxIcon isChecked={persist} />
+                <CheckboxIcon isChecked={persist === "yes" ? true : false} />
               </div>
             </label>
 
             <label
-              onClick={() => setPersist((prev) => !prev)}
+              onClick={() =>
+                setPersist(() => (persist === "yes" ? "no" : "yes"))
+              }
               htmlFor="remember-me"
               className="text-[12px] tracking-[-0.006em] cursor-pointer leading-6 font-[400] text-[#000]"
             >

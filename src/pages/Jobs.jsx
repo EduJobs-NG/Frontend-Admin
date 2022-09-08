@@ -61,7 +61,7 @@ export const Jobs = () => {
 
   return (
     jobStates && (
-      <div className="bg-[#fff] rounded-[30px] pb-[41px] h-[100%]">
+      <div className="bg-[#fff] rounded-[30px] pb-[41px] min-h-[100%] flex flex-col">
         <div className="flex justify-between items-center">
           <WrapperHeader title="Jobs Posted" />
           <button
@@ -73,7 +73,7 @@ export const Jobs = () => {
           </button>
         </div>
 
-        <div className="flex h-[100%] pb-[60px]">
+        <div className="flex h-[100%] pb-[60px] grow">
           <div className="flex flex-col gap-[15px] pl-[28px] pr-[20px] grow">
             {jobStates.map((jobState) => (
               <div key={jobState.status}>
@@ -160,7 +160,7 @@ export const Jobs = () => {
           </div>
 
           {jobInView && (
-            <div className="flex flex-col rounded-[21px] px-[14px] py-[20px] mr-[20px] border-[1px] border-solid border-[#D9D9D9] max-w-[250px] min-w-[210px] h-[100%]">
+            <div className="flex flex-col rounded-[21px] px-[14px] py-[20px] mr-[20px] border-[1px] border-solid border-[#D9D9D9] max-w-[400px] min-w-[210px]">
               <div className="text-[#02378B] text-[14px] font-[700] leading-[18px]">
                 {jobInView.job.title}
               </div>

@@ -4,7 +4,10 @@ import { LoadingIndicator } from "../components/LoadingIndicator";
 import useAxios from "../hooks/useAxios";
 
 export const PostJobs = ({ setPageTitle }) => {
-  setPageTitle("Jobs");
+  useEffect(() => {
+    setPageTitle("Jobs");
+  }, []);
+
   const [data, setData] = useState({
     deadline: "",
     title: "",

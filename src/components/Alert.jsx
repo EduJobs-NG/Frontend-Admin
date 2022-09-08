@@ -1,7 +1,11 @@
 export const Alert = ({ title, text, setIsPositive }) => {
   return (
     <div className="bg-[#F5F5F5] rounded-[20px] p-[34px] w-[90%] max-w-[439px] text-center">
-      <div className="text-[#000] text-[16px] font-[700] leading-[20px] mb-[29px]">
+      <div
+        className={`${
+          title === "DELETE" ? "text-[#C90415]" : "text-[#000]"
+        } text-[16px] font-[700] leading-[20px] mb-[29px]`}
+      >
         {title}
       </div>
       <p className="text-[#000] text-[16px] font-[600] leading-[20px] mb-[52px]">

@@ -6,7 +6,7 @@ const useLogout = () => {
 
   const logout = async () => {
     setAuth({});
-    setPersist(false);
+    setPersist("yes");
     localStorage.removeItem("refresh");
 
     try {
