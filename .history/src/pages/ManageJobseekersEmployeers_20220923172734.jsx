@@ -31,11 +31,11 @@ export const ManageJobseekersEmployeers = ({ title }) => {
         console.log(data);
         return {
           id: data.id,
-          name: data.user?.first_name | data.name,
-          email: data.user?.email | '',
-          number: data?.phone_number | '',
+          name: data.user.first_name || '',
+          email: data.user.email || '',
+          number: data.phone_number || '',
           actions: '',
-          userId: data.user?.id | '',
+          userId: data.user.id || '',
         };
       });
 

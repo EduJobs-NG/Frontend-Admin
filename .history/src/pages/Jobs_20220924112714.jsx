@@ -219,7 +219,7 @@ export const Jobs = () => {
                 </div>
                 {console.log(jobInView)}
                 <ReactMarkdown
-                  skipHtml={false}
+                  skipHtml={true}
                   children={jobInView.job.requirements}
                 />
               </div>

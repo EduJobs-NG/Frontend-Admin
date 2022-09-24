@@ -4,7 +4,6 @@ import useAxios from '../hooks/useAxios';
 import { WrapperHeader } from '../components/WrapperHeader';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import { ErrorIndicator } from '../components/ErrorIndicator';
-import ReactMarkdown from 'react-markdown';
 
 import add from '../assets/add.svg';
 import hide from '../assets/hide.svg';
@@ -14,6 +13,7 @@ export const Jobs = () => {
   const [jobStates, setJobStates] = useState(null);
   const [jobInView, setJobInView] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export const Jobs = () => {
     makeRequest,
     isLoading,
     errorMessage,
-    success,
+    aSuccess,
     data: jobs,
   } = getApprovedJobs();
 
@@ -50,11 +50,20 @@ export const Jobs = () => {
     dRequest({ url: '/jobs-review/declined' });
   }, []);
 
+  // Promise.all(pSuccess, dSuccess, aSuccess)
+  //   .then((data) => {
+  //     console.log(data);
+  //     setSuccess(data);
+  //   })
+  //   .catch((e) => console.log(e));
+
   useEffect(() => {
-    // console.log(pJobs);
-    // console.log(jobs);
-    // console.log(dJobs);
-    if (success && pSuccess && dSuccess) {
+    console.log('here');
+    if (aSuccess && pSuccess && dSuccess) {
+      console.log('here 2');
+      console.log(pJobs);
+      console.log(jobs);
+      console.log(dJobs);
       const approvedJobs = jobs;
       const pendingJobs = pJobs;
       const declinedJobs = dJobs;
@@ -73,9 +82,9 @@ export const Jobs = () => {
         // { status: 'Reported', data: reportedJobs },
       ]);
     }
-  }, [dSuccess, pSuccess, success]);
+  }, [aSuccess, pSuccess, dSuccess]);
 
-  if (isLoading && pLoading && dLoading) return <LoadingIndicator />;
+  if (isLoading | pLoading | dLoading) return <LoadingIndicator />;
   if (errorMessage) {
     console.log(errorMessage);
     return <ErrorIndicator error={errorMessage} />;
@@ -94,6 +103,7 @@ export const Jobs = () => {
   return (
     jobStates && (
       <div className='bg-[#fff] rounded-[30px] pb-[41px] min-h-[100%] flex flex-col'>
+        {console.log(jobStates)}
         <div className='flex justify-between items-center'>
           <WrapperHeader title='Jobs Posted' />
           <button
@@ -211,17 +221,24 @@ export const Jobs = () => {
                 </p>
               </div>
 
-              {/* <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div> */}
+              <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div>
 
               <div>
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {console.log(jobInView)}
-                <ReactMarkdown
-                  skipHtml={false}
-                  children={jobInView.job.requirements}
-                />
+                {/* {console.log(jobInView.qualifications)} */}
+
+                {/* <ol type="1">
+                {jobInView.qualifications.map((qualification, index) => (
+                  <li
+                    key={index}
+                    className="text-[#606060] text-[8px] font-[400] leading-[10px] ml-[10px] list-decimal"
+                  >
+                    {qualification}
+                  </li>
+                ))}
+              </ol> */}
               </div>
 
               <div className='mt-[auto]'>

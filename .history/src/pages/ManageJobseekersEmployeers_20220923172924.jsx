@@ -35,7 +35,7 @@ export const ManageJobseekersEmployeers = ({ title }) => {
           email: data.user?.email | '',
           number: data?.phone_number | '',
           actions: '',
-          userId: data.user?.id | '',
+          userId: data?.user.id | '',
         };
       });
 

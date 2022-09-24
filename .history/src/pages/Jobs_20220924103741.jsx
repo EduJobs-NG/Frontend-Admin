@@ -4,7 +4,6 @@ import useAxios from '../hooks/useAxios';
 import { WrapperHeader } from '../components/WrapperHeader';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import { ErrorIndicator } from '../components/ErrorIndicator';
-import ReactMarkdown from 'react-markdown';
 
 import add from '../assets/add.svg';
 import hide from '../assets/hide.svg';
@@ -51,13 +50,13 @@ export const Jobs = () => {
   }, []);
 
   useEffect(() => {
-    // console.log(pJobs);
-    // console.log(jobs);
-    // console.log(dJobs);
     if (success && pSuccess && dSuccess) {
-      const approvedJobs = jobs;
-      const pendingJobs = pJobs;
-      const declinedJobs = dJobs;
+      console.log(pJobs);
+      console.log(jobs);
+      console.log(dJobs);
+      const approvedJobs = jobs.results;
+      const pendingJobs = pJobs.results;
+      const declinedJobs = dJobs.results;
       // const reportedJobs = jobs.results.filter(
       //   (job) => job.status === 'Reported'
       // );
@@ -73,23 +72,11 @@ export const Jobs = () => {
         // { status: 'Reported', data: reportedJobs },
       ]);
     }
-  }, [dSuccess, pSuccess, success]);
+  }, [success]);
 
   if (isLoading && pLoading && dLoading) return <LoadingIndicator />;
-  if (errorMessage) {
-    console.log(errorMessage);
+  if (errorMessage | pError | dError)
     return <ErrorIndicator error={errorMessage} />;
-  }
-
-  if (pError) {
-    console.log(pError);
-    return <ErrorIndicator error={pError} />;
-  }
-
-  if (dError) {
-    console.log(dError);
-    return <ErrorIndicator error={dError} />;
-  }
 
   return (
     jobStates && (
@@ -211,17 +198,24 @@ export const Jobs = () => {
                 </p>
               </div>
 
-              {/* <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div> */}
+              <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div>
 
               <div>
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {console.log(jobInView)}
-                <ReactMarkdown
-                  skipHtml={false}
-                  children={jobInView.job.requirements}
-                />
+                {/* {console.log(jobInView.qualifications)} */}
+
+                {/* <ol type="1">
+                {jobInView.qualifications.map((qualification, index) => (
+                  <li
+                    key={index}
+                    className="text-[#606060] text-[8px] font-[400] leading-[10px] ml-[10px] list-decimal"
+                  >
+                    {qualification}
+                  </li>
+                ))}
+              </ol> */}
               </div>
 
               <div className='mt-[auto]'>

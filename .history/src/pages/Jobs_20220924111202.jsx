@@ -4,7 +4,6 @@ import useAxios from '../hooks/useAxios';
 import { WrapperHeader } from '../components/WrapperHeader';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import { ErrorIndicator } from '../components/ErrorIndicator';
-import ReactMarkdown from 'react-markdown';
 
 import add from '../assets/add.svg';
 import hide from '../assets/hide.svg';
@@ -211,17 +210,24 @@ export const Jobs = () => {
                 </p>
               </div>
 
-              {/* <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div> */}
+              <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div>
 
               <div>
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {console.log(jobInView)}
-                <ReactMarkdown
-                  skipHtml={false}
-                  children={jobInView.job.requirements}
-                />
+                {/* {console.log(jobInView.qualifications)} */}
+
+                {/* <ol type="1">
+                {jobInView.qualifications.map((qualification, index) => (
+                  <li
+                    key={index}
+                    className="text-[#606060] text-[8px] font-[400] leading-[10px] ml-[10px] list-decimal"
+                  >
+                    {qualification}
+                  </li>
+                ))}
+              </ol> */}
               </div>
 
               <div className='mt-[auto]'>

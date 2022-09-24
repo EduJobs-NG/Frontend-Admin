@@ -211,17 +211,13 @@ export const Jobs = () => {
                 </p>
               </div>
 
-              {/* <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div> */}
+              <div className='mb-[6px] bg-[#606060] h-[0.5px]'></div>
 
               <div>
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {console.log(jobInView)}
-                <ReactMarkdown
-                  skipHtml={false}
-                  children={jobInView.job.requirements}
-                />
+                <ReactMarkdown children={jobInView.requirements} />
               </div>
 
               <div className='mt-[auto]'>
