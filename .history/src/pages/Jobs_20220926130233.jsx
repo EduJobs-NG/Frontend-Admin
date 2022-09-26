@@ -14,6 +14,7 @@ export const Jobs = () => {
   const [jobStates, setJobStates] = useState(null);
   const [jobInView, setJobInView] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [pagination, setPagination] = useState(null);
 
   const navigate = useNavigate();
 
@@ -64,28 +65,28 @@ export const Jobs = () => {
 
       console.log(pJobs);
 
-      // console.log(pendingJobs);
-      console.log(jobs);
-      console.log(dJobs);
+      console.log(pendingJobs);
+      console.log(approvedJobs);
+      console.log(declinedJobs);
 
       setJobStates([
         {
           status: 'Approved',
           data: approvedJobs,
           next: jobs.next,
-          prev: jobs.previous,
+          prev: jobs.prev,
         },
         {
           status: 'Pending',
           data: pendingJobs,
           next: pJobs.next,
-          prev: pJobs.previous,
+          prev: pJobs.prev,
         },
         {
           status: 'Declined',
           data: declinedJobs,
           next: dJobs.next,
-          prev: dJobs.previous,
+          prev: dJobs.prev,
         },
         // { status: 'Reported', data: reportedJobs },
       ]);
@@ -94,76 +95,10 @@ export const Jobs = () => {
 
   const handlePrevious = (status, link) => {
     console.log(status, link);
-    if (status === 'Pending') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/pending` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/pending/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (status === 'Approved') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/approved` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/approved/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (status === 'Declined') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/declined` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/declined/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
   };
 
   const handleNext = (status, link) => {
     console.log(status, link);
-    if (status === 'Pending') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/pending/?${page}` });
-      return;
-    }
-    if (status === 'Approved') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/approved/?${page}` });
-      return;
-    }
-    if (status === 'Declined') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/declined/?${page}` });
-      return;
-    }
   };
 
   if (isLoading && pLoading && dLoading) return <LoadingIndicator />;
@@ -278,14 +213,14 @@ export const Jobs = () => {
                         </p>
                       )}
                     </div>
-                    {jobState.data.length ? (
+                    {jobState.data.length && (
                       <div className='flex flex-row w-full items-center justify-between px-8 mt-4'>
                         {jobState.prev && (
                           <p
                             onClick={() =>
                               handlePrevious(jobState.status, jobState.prev)
                             }
-                            className='w-12 border-2 border-blue-500 rounded text-center text-base hover:cursor-pointer'
+                            className='w-12 border-2 border-blue-500 rounded text-center text-base'
                           >
                             prev
                           </p>
@@ -293,15 +228,15 @@ export const Jobs = () => {
                         {jobState.next && (
                           <p
                             onClick={() =>
-                              handleNext(jobState.status, jobState.next)
+                              handleNext(jobState.status, jobState.prev)
                             }
-                            className='w-12 border-2 border-blue-500 rounded text-center text-base hover:cursor-pointer'
+                            className='w-12 border-2 border-blue-500 rounded text-center text-base'
                           >
                             next
                           </p>
                         )}
                       </div>
-                    ) : null}
+                    )}
                   </div>
                 )}
               </div>
@@ -334,7 +269,7 @@ export const Jobs = () => {
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {/* {console.log(jobInView)} */}
+                {console.log(jobInView)}
                 <ReactMarkdown
                   skipHtml={false}
                   children={jobInView.job.requirements}

@@ -14,6 +14,7 @@ export const Jobs = () => {
   const [jobStates, setJobStates] = useState(null);
   const [jobInView, setJobInView] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [pagination, setPagination] = useState(null);
 
   const navigate = useNavigate();
 
@@ -334,7 +335,7 @@ export const Jobs = () => {
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {/* {console.log(jobInView)} */}
+                {console.log(jobInView)}
                 <ReactMarkdown
                   skipHtml={false}
                   children={jobInView.job.requirements}

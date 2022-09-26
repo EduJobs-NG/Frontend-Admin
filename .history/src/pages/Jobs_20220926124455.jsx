@@ -51,120 +51,29 @@ export const Jobs = () => {
   }, []);
 
   useEffect(() => {
+    // console.log(pJobs);
     // console.log(jobs);
     // console.log(dJobs);
     if (success && pSuccess && dSuccess) {
       const approvedJobs = jobs.results;
       const pendingJobs = pJobs.results;
       const declinedJobs = dJobs.results;
-
       // const reportedJobs = jobs.results.filter(
       //   (job) => job.status === 'Reported'
       // );
 
-      console.log(pJobs);
-
-      // console.log(pendingJobs);
-      console.log(jobs);
-      console.log(dJobs);
+      console.log(pendingJobs);
+      console.log(approvedJobs);
+      console.log(declinedJobs);
 
       setJobStates([
-        {
-          status: 'Approved',
-          data: approvedJobs,
-          next: jobs.next,
-          prev: jobs.previous,
-        },
-        {
-          status: 'Pending',
-          data: pendingJobs,
-          next: pJobs.next,
-          prev: pJobs.previous,
-        },
-        {
-          status: 'Declined',
-          data: declinedJobs,
-          next: dJobs.next,
-          prev: dJobs.previous,
-        },
+        { status: 'Approved', data: approvedJobs },
+        { status: 'Pending', data: pendingJobs },
+        { status: 'Declined', data: declinedJobs },
         // { status: 'Reported', data: reportedJobs },
       ]);
     }
   }, [dSuccess, pSuccess, success]);
-
-  const handlePrevious = (status, link) => {
-    console.log(status, link);
-    if (status === 'Pending') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/pending` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/pending/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (status === 'Approved') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/approved` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/approved/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (status === 'Declined') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/declined` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/declined/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
-
-  const handleNext = (status, link) => {
-    console.log(status, link);
-    if (status === 'Pending') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/pending/?${page}` });
-      return;
-    }
-    if (status === 'Approved') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/approved/?${page}` });
-      return;
-    }
-    if (status === 'Declined') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/declined/?${page}` });
-      return;
-    }
-  };
 
   if (isLoading && pLoading && dLoading) return <LoadingIndicator />;
   if (errorMessage) {
@@ -278,30 +187,14 @@ export const Jobs = () => {
                         </p>
                       )}
                     </div>
-                    {jobState.data.length ? (
-                      <div className='flex flex-row w-full items-center justify-between px-8 mt-4'>
-                        {jobState.prev && (
-                          <p
-                            onClick={() =>
-                              handlePrevious(jobState.status, jobState.prev)
-                            }
-                            className='w-12 border-2 border-blue-500 rounded text-center text-base hover:cursor-pointer'
-                          >
-                            prev
-                          </p>
-                        )}
-                        {jobState.next && (
-                          <p
-                            onClick={() =>
-                              handleNext(jobState.status, jobState.next)
-                            }
-                            className='w-12 border-2 border-blue-500 rounded text-center text-base hover:cursor-pointer'
-                          >
-                            next
-                          </p>
-                        )}
-                      </div>
-                    ) : null}
+                    <div className='flex flex-col'>
+                      <p className='w-12 border-2 border-blue-500 rounded text-center text-base'>
+                        prev
+                      </p>
+                      <p className='w-12 border-2 border-blue-500 rounded text-center text-base'>
+                        next
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -334,7 +227,7 @@ export const Jobs = () => {
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {/* {console.log(jobInView)} */}
+                {console.log(jobInView)}
                 <ReactMarkdown
                   skipHtml={false}
                   children={jobInView.job.requirements}

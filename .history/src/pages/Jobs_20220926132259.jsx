@@ -14,6 +14,7 @@ export const Jobs = () => {
   const [jobStates, setJobStates] = useState(null);
   const [jobInView, setJobInView] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [pagination, setPagination] = useState(null);
 
   const navigate = useNavigate();
 
@@ -96,50 +97,11 @@ export const Jobs = () => {
     console.log(status, link);
     if (status === 'Pending') {
       try {
-        let page = link.split('?')[1];
+        const page = link.split('?')[1] | null;
         if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/pending` });
-          return;
+          console.log('no page');
         }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/pending/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (status === 'Approved') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/approved` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/approved/?${page}` });
-        return;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (status === 'Declined') {
-      try {
-        let page = link.split('?')[1];
-        if (!page) {
-          // console.log(page);
-          // console.log('no page');
-          pRequest({ url: `/jobs-review/declined` });
-          return;
-        }
-
-        page = page.trim();
-        pRequest({ url: `/jobs-review/declined/?${page}` });
+        // pRequest({ url: `/jobs-review/pending/?${page}` });
         return;
       } catch (e) {
         console.log(e);
@@ -152,16 +114,6 @@ export const Jobs = () => {
     if (status === 'Pending') {
       const page = link.split('?')[1].trim();
       pRequest({ url: `/jobs-review/pending/?${page}` });
-      return;
-    }
-    if (status === 'Approved') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/approved/?${page}` });
-      return;
-    }
-    if (status === 'Declined') {
-      const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/declined/?${page}` });
       return;
     }
   };
@@ -334,7 +286,7 @@ export const Jobs = () => {
                 <div className='text-[#000] text-[10px] font-[700] leading-[13px] mb-[3px]'>
                   Qualifications
                 </div>
-                {/* {console.log(jobInView)} */}
+                {console.log(jobInView)}
                 <ReactMarkdown
                   skipHtml={false}
                   children={jobInView.job.requirements}
