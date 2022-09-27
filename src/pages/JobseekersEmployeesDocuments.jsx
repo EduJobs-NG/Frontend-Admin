@@ -71,12 +71,12 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = pendingData?.map((data, index) => {
           return {
             id: index + 1,
-            name: data.name,
-            cv: data.cv,
-            resume: data.cv,
-            certificates: data.cv,
+            name: data.name || 'nothing to show',
+            cv: data.cv || 'nothing to show',
+            resume: data.cv || 'nothing to show',
+            certificates: data.cv || 'nothing to show',
             actions: '',
-            userId: data.id,
+            userId: data.id || 'nothing to show',
           };
         });
         setPendingTableData(newData);
@@ -87,10 +87,10 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
             name:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
-              }` | '',
-            cv: data.cv,
-            resume: data.cv,
-            certificates: data.cv,
+              }` || 'nothing to show',
+            cv: data.cv || 'nothing to show',
+            resume: data.cv || 'nothing to show',
+            certificates: data.cv || 'nothing to show',
             actions: '',
             userId: data.id,
           };
@@ -109,10 +109,10 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = verifiedData?.map((data, index) => {
           return {
             id: index + 1,
-            name: data.name,
-            cv: data.cv,
-            resume: data.cv,
-            certificates: data.cv,
+            name: data.name || 'nothing to show',
+            cv: data.cv || 'nothing to show',
+            resume: data.cv || 'nothing to show',
+            certificates: data.cv || 'nothing to show',
             actions: '',
             userId: data.id,
           };
@@ -125,12 +125,12 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
             name:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
-              }` | '',
-            cv: data.cv,
-            resume: data.cv,
-            certificates: data.cv,
+              }` || 'nothing to show',
+            cv: data.cv || 'nothing to show',
+            resume: data.cv || 'nothing to show',
+            certificates: data.cv || 'nothing to show',
             actions: '',
-            userId: data.id,
+            userId: data.id || 'nothing to show',
           };
         });
 
@@ -142,22 +142,37 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
   useEffect(() => {
     if (declinedSuccess) {
       console.log(declinedData);
-      const newData = declinedData?.map((data, index) => {
-        return {
-          id: index + 1,
-          name:
-            `${data.user.first_name ? data.user.first_name : ''} ${
-              data.user.last_name ? data.user.last_name : ''
-            }` | '',
-          cv: data.cv,
-          resume: data.cv,
-          certificates: data.cv,
-          actions: '',
-          userId: data.id,
-        };
-      });
+      if (title === 'Jobseekers Documents') {
+        const newData = declinedData?.map((data, index) => {
+          return {
+            id: index + 1,
+            name: data.name || 'nothing to show',
+            cv: data.cv || 'nothing to show',
+            resume: data.cv || 'nothing to show',
+            certificates: data.cv || 'nothing to show',
+            actions: '',
+            userId: data.id,
+          };
+        });
+        setDeclinedTableData(newData);
+      } else {
+        const newData = declinedData?.map((data, index) => {
+          return {
+            id: index + 1,
+            name:
+              `${data.user.first_name ? data.user.first_name : ''} ${
+                data.user.last_name ? data.user.last_name : ''
+              }` || 'nothing to show',
+            cv: data.cv || 'nothing to show',
+            resume: data.cv || 'nothing to show',
+            certificates: data.cv || 'nothing to show',
+            actions: '',
+            userId: data.id || 'nothing to show',
+          };
+        });
 
-      setDeclinedTableData(newData);
+        setDeclinedTableData(newData);
+      }
     }
   }, [declinedSuccess]);
 

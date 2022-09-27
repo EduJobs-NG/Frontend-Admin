@@ -1,12 +1,38 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useTable, usePagination, useGlobalFilter } from 'react-table';
+import { useState, useEffect } from 'react';
 import { WrapperHeader } from '../components/WrapperHeader';
-import { MANAGE_COLUMNS } from '../constants/table';
 import { Alert } from '../components/Alert';
 import search from '../assets/search-chat.svg';
 import remove from '../assets/delete.svg';
 import chat from '../assets/chat.svg';
 import useAxios from '../hooks/useAxios';
+import { LoadingIndicator } from '../components/LoadingIndicator';
+import {
+  DataGrid,
+  GridToolbarQuickFilter,
+  GridLinkOperator,
+} from '@mui/x-data-grid';
+
+function QuickSearchToolbar() {
+  return (
+    <div
+      style={{
+        padding: '0px 10px',
+        position: 'absolute',
+        top: '-50px',
+        right: '0px',
+      }}
+    >
+      <GridToolbarQuickFilter
+        quickFilterParser={(searchInput) =>
+          searchInput
+            .split(',')
+            .map((value) => value.trim())
+            .filter((value) => value !== '')
+        }
+      />
+    </div>
+  );
+}
 
 export const ManageJobseekersEmployeersTable = ({
   tableData,
@@ -16,12 +42,76 @@ export const ManageJobseekersEmployeersTable = ({
   const [toDeleteDetail, setToDeleteDetail] = useState(null);
   const [isPositive, setIsPositive] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-  const columns = useMemo(() => MANAGE_COLUMNS, []);
-  const data = useMemo(() => tableData, []);
+
+  const [pageState, setPageState] = useState({
+    isLoading: false,
+    data: tableData.data,
+    total: tableData.count,
+    page: 1,
+    pageSize: 10,
+  });
 
   const deleteData = useAxios();
 
   console.log(tableData);
+
+  useEffect(() => {
+    setPageState((old) => ({
+      ...old,
+      isLoading: false,
+      data: tableData.data,
+      total: tableData.count,
+      page: 1,
+    }));
+  }, [tableData]);
+
+  const columns = [
+    { field: 'col1', headerName: 'id', width: 70 },
+    { field: 'col2', headerName: 'name', width: 170 },
+    { field: 'col3', headerName: 'email', width: 170 },
+    { field: 'col4', headerName: 'number', width: 170 },
+    {
+      field: 'col5',
+      headerName: 'action',
+      width: 150,
+      sortable: false,
+      renderCell: (params) => {
+        const onClick = (e) => {
+          e.stopPropagation(); // don't select this row after clicking
+
+          const api = params.api;
+          const thisRow = {};
+
+          api
+            .getAllColumns()
+            .filter((c) => c.field !== '__check__' && !!c)
+            .forEach(
+              (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
+            );
+
+          return handleDeleteConfirmation(thisRow);
+        };
+
+        return (
+          <div className='flex items-center gap-[11px] text-[10px] font-[700] leading-6'>
+            <button className='flex items-center gap-[5px] text-[#00944D]'>
+              <img src={chat} alt='chat-icon' />
+              <span>Chat</span>
+            </button>
+
+            <button
+              onClick={onClick}
+              className='flex items-center gap-[5px] text-[#C90415]'
+            >
+              <img src={remove} alt='delete-icon' />
+              <span>Delete</span>
+            </button>
+          </div>
+        );
+      },
+    },
+    // { field: 'col6', headerName: 'userId', width: 0 },
+  ];
 
   const {
     makeRequest,
@@ -31,37 +121,15 @@ export const ManageJobseekersEmployeersTable = ({
     data: gottenData,
   } = deleteData();
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    nextPage,
-    previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    setGlobalFilter,
-    state: { pageSize, pageIndex, globalFilter },
-  } = useTable(
-    {
-      columns,
-      data,
-    },
-    useGlobalFilter,
-    usePagination
-  );
-
   useEffect(() => {
     if (isPositive === 'yes') {
       makeRequest({
         url:
           title === 'Manage Jobseekers'
-            ? `/jobseekers/user-document-review/${toDeleteDetail.userId}`
-            : `/employer/user-profile-review/${toDeleteDetail.userId}`,
+            ? `/jobseekers/user-profile-review/${toDeleteDetail.id}`
+            : `/employer/user-profile-review/${toDeleteDetail.id}`,
         method: 'DELETE',
-        payload: { id: toDeleteDetail.userId },
+        payload: { id: toDeleteDetail.id },
       });
     } else {
       setShowAlert(false);
@@ -70,13 +138,14 @@ export const ManageJobseekersEmployeersTable = ({
     }
   }, [isPositive]);
 
-  useEffect(() => {
-    if (success) setTimeout(() => setRefetch((prev) => prev + 1), 0);
-  }, [success]);
+  // useEffect(() => {
+  //   if (success) setTimeout(() => setRefetch((prev) => prev + 1), 0);
+  // }, [success]);
 
   const handleDeleteConfirmation = (detail) => {
-    setToDeleteDetail(detail);
-    setShowAlert(true);
+    // setToDeleteDetail(detail);
+    console.log(detail);
+    // setShowAlert(true);
   };
 
   if (isLoading) return <LoadingIndicator />;
@@ -88,147 +157,35 @@ export const ManageJobseekersEmployeersTable = ({
         <div className='ml-[-28px]'>
           <WrapperHeader title={title} />
         </div>
-        <div className='relative'>
-          <input
-            type='text'
-            placeholder='Search'
-            value={globalFilter || ''}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className='flex items-center text-[14px] leading-[18px] text-[#525252] bg-[#F2F2F2] rounded-[25px] h-[40px] px-[23px] w-[333px] outline-none border-none'
-          />
-          <img
-            src={search}
-            alt='search icon'
-            className='absolute top-[50%] right-[23px] translate-y-[-50%]'
-          />
-        </div>
+        {/* search */}
       </div>
-
-      <table
-        {...getTableProps()}
-        className='w-[100%] min-w-[100%] max-w-[100%]'
-      >
-        <thead className='bg-[#C9DEFF]'>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, index, arr) => (
-                <th
-                  {...column.getHeaderProps()}
-                  className={`text-[14px] font-[600] leading-[18px] p-[12px] text-[#000] ${
-                    index !== arr.length - 1
-                      ? 'border-r-[1px] border-solid border-[#808080]'
-                      : 'border-none'
-                  } ${index ? 'text-start' : 'text-center'}`}
-                >
-                  {column.render('Header')}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, index) => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className={`${index % 2 !== 0 ? 'bg-[#F2F2F2]' : 'bg-[#fff]'}`}
-              >
-                {row.cells.map((cell, index, arr) => (
-                  <td
-                    {...cell.getCellProps()}
-                    className={`text-[14px] leading-[18px] text-[#000] p-[13px] ${
-                      index ? 'text-start' : 'text-center'
-                    } ${
-                      cell.column.Header === 'Name'
-                        ? 'min-w-[230px]'
-                        : 'min-w-[0px]'
-                    } ${
-                      index !== arr.length - 1
-                        ? 'border-r-[1px] border-solid border-[#808080]'
-                        : 'border-none'
-                    }`}
-                  >
-                    {cell.column.Header === 'Actions' && (
-                      <div className='flex items-center gap-[11px] text-[10px] font-[700] leading-6'>
-                        <button className='flex items-center gap-[5px] text-[#02378b]'>
-                          <img src={chat} alt='chat icon' />
-                          <span>chat</span>
-                        </button>
-
-                        <button
-                          className='flex items-center gap-[5px] text-[#C90415]'
-                          onClick={() =>
-                            // handleDeleteConfirmation(cell.row.original.userId)
-                            handleDeleteConfirmation(cell.row.original)
-                          }
-                        >
-                          <img src={remove} alt='remove icon' />
-                          <span>Delete</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {cell.column.Header === 'Email Address' && (
-                      <>{cell.render('Cell')}</>
-                    )}
-
-                    {cell.column.Header === 'Phone Number' && (
-                      <>{cell.render('Cell')}</>
-                    )}
-
-                    {cell.column.Header === 'Name' && (
-                      <>{cell.render('Cell')}</>
-                    )}
-
-                    {cell.column.Header === 'S/N' && <>{cell.render('Cell')}</>}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <div className='flex items-center h-[21px] mt-[auto] justify-between'>
-        {/* <div className="text-[10px] leading-[13px] text-[#000]">
-          Showing {pageSize * (pageIndex + 1) - 9} to{" "}
-          {pageSize * (pageIndex + 1)} of {data.length} entries
-        </div> */}
-        <div className='text-[10px] leading-[13px] text-[#000]'>
-          Showing {pageSize * (pageIndex + 1) - 9} to{' '}
-          {pageSize * (pageIndex + 1) - 10 + data.length} of {data.length}{' '}
-          entries
-        </div>
-
-        <div className='flex items-center h-[18px]'>
-          <button
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-            className={`text-[10px] font-[600] leading-[13px] mr-[26px] outline-none ${
-              canPreviousPage
-                ? 'text-[#02378B] cursor-pointer'
-                : 'text-[#606060a0] cursor-not-allowed'
-            }`}
-          >
-            Prev
-          </button>
-
-          <button
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-            className={`text-[10px] font-[600] leading-[13px] ml-[20px] outline-none ${
-              canNextPage
-                ? 'text-[#02378B] cursor-pointer'
-                : 'text-[#606060a0] cursor-not-allowed'
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      </div>
-
+      <DataGrid
+        rows={pageState.data}
+        rowCount={pageState.total}
+        loading={pageState.isLoading}
+        rowsPerPageOptions={[10]}
+        pagination
+        page={pageState.page}
+        pageSize={pageState.pageSize}
+        paginationMode='server'
+        onPageChange={(newPage) =>
+          setPageState((old) => ({ ...old, page: newPage }))
+        }
+        onPageSizeChange={(newPageSize) =>
+          setPageState((old) => ({ ...old, pageSize: newPageSize }))
+        }
+        columns={columns}
+        initialState={{
+          filter: {
+            filterModel: {
+              items: [],
+              quickFilterLogicOperator: GridLinkOperator.Or,
+            },
+          },
+        }}
+        components={{ Toolbar: QuickSearchToolbar }}
+        autoHeight={true}
+      />
       {showAlert && (
         <div className='fixed top-[0] right-[0] bottom-[0] left-[255px] flex justify-center items-center bg-[#918a8a61]'>
           <div>
