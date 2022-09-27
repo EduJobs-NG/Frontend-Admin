@@ -24,6 +24,7 @@ export const PostJobs = ({ setPageTitle }) => {
     job_type: '',
     requirements: '',
   });
+  const [displayReq, setDisplayReq] = useState();
 
   const navigate = useNavigate();
 
@@ -189,12 +190,14 @@ export const PostJobs = ({ setPageTitle }) => {
           </label>
           <Editor
             ref={mdEditor}
-            value={data.requirements}
+            value={displayReq}
             style={{
               height: '500px',
             }}
             onChange={({ html, text }) => {
-              setData({ ...data, requirements: text });
+              // console.log(html);
+              setData({ ...data, requirements: html });
+              setDisplayReq(text);
             }}
             renderHTML={(text) => <ReactMarkdown children={text} />}
           />

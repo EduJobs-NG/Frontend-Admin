@@ -71,70 +71,70 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = pendingData?.map((data, index) => {
           return {
             id: index + 1,
-            name: data.name || 'nothing to show',
-            cv: data.cv || 'nothing to show',
-            resume: data.cv || 'nothing to show',
-            certificates: data.cv || 'nothing to show',
-            actions: '',
-            userId: data.id || 'nothing to show',
+            col1: data.id,
+            col2: data.name || 'nothing to show',
+            col3: data.cv || 'nothing to show',
+            col4: data.cv || 'nothing to show',
+            col5: data.cv || 'nothing to show',
+            col6: '',
           };
         });
-        setPendingTableData(newData);
+        setPendingTableData({ data: newData, count: pendingData.length });
       } else {
         const newData = pendingData?.map((data, index) => {
           return {
             id: index + 1,
-            name:
+            col1: data.id,
+            col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
-            cv: data.cv || 'nothing to show',
-            resume: data.cv || 'nothing to show',
-            certificates: data.cv || 'nothing to show',
-            actions: '',
-            userId: data.id,
+            col3: data.cv[0] || 'nothing to show',
+            col4: data.cv[0] || 'nothing to show',
+            col5: data.credentials || 'nothing to show',
+            col6: '',
           };
         });
 
-        setPendingTableData(newData);
+        setPendingTableData({ data: newData, count: pendingData.length });
       }
     }
   }, [pendingSuccess]);
 
   useEffect(() => {
     if (verifiedSuccess) {
-      // console.log(verifiedData);
+      console.log(verifiedData);
 
       if (title === 'Jobseekers Documents') {
         const newData = verifiedData?.map((data, index) => {
           return {
             id: index + 1,
-            name: data.name || 'nothing to show',
-            cv: data.cv || 'nothing to show',
-            resume: data.cv || 'nothing to show',
-            certificates: data.cv || 'nothing to show',
-            actions: '',
-            userId: data.id,
+            col1: data.id,
+            col2: data.name || 'nothing to show',
+            col3: data.cv || 'nothing to show',
+            col4: data.cv || 'nothing to show',
+            col5: data.cv || 'nothing to show',
+            col6: '',
           };
         });
-        setVerifiedTableData(newData);
+        setVerifiedTableData({ data: newData, count: verifiedData.length });
       } else {
         const newData = verifiedData?.map((data, index) => {
           return {
             id: index + 1,
-            name:
+            col1: data.id,
+            col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
-            cv: data.cv || 'nothing to show',
-            resume: data.cv || 'nothing to show',
-            certificates: data.cv || 'nothing to show',
-            actions: '',
-            userId: data.id || 'nothing to show',
+            col3: data.cv[0] || 'nothing to show',
+            col4: data.cv[0] || 'nothing to show',
+            col5: data.credentials || 'nothing to show',
+            col6: '',
           };
         });
 
-        setVerifiedTableData(newData);
+        setVerifiedTableData({ data: newData, count: verifiedData.length });
       }
     }
   }, [verifiedSuccess]);
@@ -146,32 +146,32 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = declinedData?.map((data, index) => {
           return {
             id: index + 1,
-            name: data.name || 'nothing to show',
-            cv: data.cv || 'nothing to show',
-            resume: data.cv || 'nothing to show',
-            certificates: data.cv || 'nothing to show',
-            actions: '',
-            userId: data.id,
+            col1: data.id,
+            col2: data.name || 'nothing to show',
+            col3: data.cv || 'nothing to show',
+            col4: data.cv || 'nothing to show',
+            col5: data.cv || 'nothing to show',
+            col6: '',
           };
         });
-        setDeclinedTableData(newData);
+        setDeclinedTableData({ data: newData, count: declinedData.length });
       } else {
         const newData = declinedData?.map((data, index) => {
           return {
             id: index + 1,
-            name:
+            col1: data.id,
+            col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
-            cv: data.cv || 'nothing to show',
-            resume: data.cv || 'nothing to show',
-            certificates: data.cv || 'nothing to show',
-            actions: '',
-            userId: data.id || 'nothing to show',
+            col3: data.cv[0] || 'nothing to show',
+            col4: data.cv[0] || 'nothing to show',
+            col5: data.credentials || 'nothing to show',
+            col6: '',
           };
         });
 
-        setDeclinedTableData(newData);
+        setDeclinedTableData({ data: newData, count: declinedData.length });
       }
     }
   }, [declinedSuccess]);

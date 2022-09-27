@@ -44,16 +44,15 @@ export const ManageJobseekersEmployeersTable = ({
   const [showAlert, setShowAlert] = useState(false);
 
   const [pageState, setPageState] = useState({
-    isLoading: false,
-    data: tableData.data,
-    total: tableData.count,
+    isLoading: true,
+    data: [],
+    total: 0,
     page: 1,
     pageSize: 10,
   });
 
   const deleteData = useAxios();
-
-  console.log(tableData);
+  const getData = useAxios();
 
   useEffect(() => {
     setPageState((old) => ({
@@ -61,9 +60,8 @@ export const ManageJobseekersEmployeersTable = ({
       isLoading: false,
       data: tableData.data,
       total: tableData.count,
-      page: 1,
     }));
-  }, [tableData]);
+  }, [pageState.page, pageState.pageSize]);
 
   const columns = [
     { field: 'col1', headerName: 'id', width: 70 },
@@ -138,14 +136,14 @@ export const ManageJobseekersEmployeersTable = ({
     }
   }, [isPositive]);
 
-  // useEffect(() => {
-  //   if (success) setTimeout(() => setRefetch((prev) => prev + 1), 0);
-  // }, [success]);
+  useEffect(() => {
+    if (success) setTimeout(() => setRefetch((prev) => prev + 1), 0);
+  }, [success]);
 
   const handleDeleteConfirmation = (detail) => {
-    // setToDeleteDetail(detail);
-    console.log(detail);
-    // setShowAlert(true);
+    setToDeleteDetail({ id: detail.col1, data: detail });
+    console.log(detail.col1);
+    setShowAlert(true);
   };
 
   if (isLoading) return <LoadingIndicator />;
@@ -192,7 +190,9 @@ export const ManageJobseekersEmployeersTable = ({
             <Alert
               title='DELETE'
               text={`Are you sure you want to delete ${
-                toDeleteDetail.name.trim() ? toDeleteDetail.name : 'this user'
+                toDeleteDetail.data.col2.trim()
+                  ? toDeleteDetail.data.col2
+                  : 'this user'
               }?, it can't be reversed?`}
               setIsPositive={setIsPositive}
             />

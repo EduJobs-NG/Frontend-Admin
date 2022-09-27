@@ -6,7 +6,7 @@ import { ManageJobseekersEmployeersTable } from './ManageJobseekersEmployeersTab
 
 export const ManageJobseekersEmployeers = ({ title }) => {
   const [tableData, setTableData] = useState(null);
-  const [refetch, setRefetch] = useState(0);
+  const [refetch, setRefetch] = useState(false);
   const getData = useAxios();
   const {
     makeRequest,
@@ -24,6 +24,15 @@ export const ManageJobseekersEmployeers = ({ title }) => {
           : '/employer/user-profile-review/',
     });
   }, [refetch]);
+
+  useEffect(() => {
+    makeRequest({
+      url:
+        title === 'Manage Jobseekers'
+          ? '/jobseekers/user-profile-review/'
+          : '/employer/user-profile-review/',
+    });
+  }, []);
 
   useEffect(() => {
     if (success) {
