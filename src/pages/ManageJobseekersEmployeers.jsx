@@ -6,7 +6,7 @@ import { ManageJobseekersEmployeersTable } from './ManageJobseekersEmployeersTab
 
 export const ManageJobseekersEmployeers = ({ title }) => {
   const [tableData, setTableData] = useState(null);
-  const [refetch, setRefetch] = useState(0);
+  const [refetch, setRefetch] = useState(false);
   const getData = useAxios();
   const {
     makeRequest,
@@ -20,26 +20,42 @@ export const ManageJobseekersEmployeers = ({ title }) => {
     makeRequest({
       url:
         title === 'Manage Jobseekers'
-          ? '/jobseekers/user-document-review/'
+          ? '/jobseekers/user-profile-review/'
           : '/employer/user-profile-review/',
     });
   }, [refetch]);
 
   useEffect(() => {
+    makeRequest({
+      url:
+        title === 'Manage Jobseekers'
+          ? '/jobseekers/user-profile-review/'
+          : '/employer/user-profile-review/',
+    });
+  }, []);
+
+  useEffect(() => {
     if (success) {
+      console.log(gottenData);
       const newData = gottenData?.results?.map((data, index) => {
-        console.log(data);
+        // console.log(data);
         return {
           id: data.id,
-          name: data.user?.first_name | data.name,
-          email: data.user?.email | '',
-          number: data?.phone_number | '',
-          actions: '',
-          userId: data.user?.id | '',
+          col1: data.id,
+          col2: data.user?.first_name || data.name || 'nothing to show',
+          col3: data.user?.email || 'nothing to show',
+          col4: data?.phone_number || 'nothing to show',
+          col5: '',
         };
       });
 
-      setTableData(newData);
+      setTableData({
+        data: newData,
+        count: gottenData.count,
+        next: gottenData.next,
+        prev: gottenData.previous,
+        rawData: gottenData.results,
+      });
     }
   }, [success]);
 

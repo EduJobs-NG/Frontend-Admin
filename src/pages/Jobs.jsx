@@ -4,7 +4,7 @@ import useAxios from '../hooks/useAxios';
 import { WrapperHeader } from '../components/WrapperHeader';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import { ErrorIndicator } from '../components/ErrorIndicator';
-import ReactMarkdown from 'react-markdown';
+import { Markup } from 'interweave';
 
 import add from '../assets/add.svg';
 import hide from '../assets/hide.svg';
@@ -335,10 +335,7 @@ export const Jobs = () => {
                   Qualifications
                 </div>
                 {/* {console.log(jobInView)} */}
-                <ReactMarkdown
-                  skipHtml={false}
-                  children={jobInView.job.requirements}
-                />
+                <Markup content={jobInView.job.requirements} />
               </div>
 
               <div className='mt-[auto]'>

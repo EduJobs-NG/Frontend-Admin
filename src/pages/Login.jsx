@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 import useAxios from '../hooks/useAxios';
 import useAuth from '../hooks/useAuth';
 
@@ -21,7 +22,7 @@ export const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef();
 
-  const { setAuth, persist, setPersist } = useAuth();
+  const { setAuth, persist, setPersist, setUserData } = useAuth();
   const postLoginData = useAxios();
   const {
     makeRequest,
@@ -59,8 +60,13 @@ export const Login = () => {
       const accessToken = data.access;
       const refreshToken = data.refresh;
 
-      // console.log(data);
+      var decoded = jwt_decode(data.access);
 
+      setUserData({
+        fullname: decoded.fullname,
+        email: decoded.email,
+        avatar: decoded.avatar,
+      });
       setAuth({ email, accessToken });
       if (persist === 'yes') localStorage.setItem('refresh', refreshToken);
       else sessionStorage.setItem('refresh', refreshToken);
