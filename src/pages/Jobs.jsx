@@ -5,15 +5,21 @@ import { WrapperHeader } from '../components/WrapperHeader';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import { ErrorIndicator } from '../components/ErrorIndicator';
 import { Markup } from 'interweave';
+import { Alert } from '../components/Alert';
 
 import add from '../assets/add.svg';
 import hide from '../assets/hide.svg';
 import show from '../assets/show.svg';
+import React from 'react';
 
 export const Jobs = () => {
   const [jobStates, setJobStates] = useState(null);
   const [jobInView, setJobInView] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [isPositive, setIsPositive] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertDetails, setAlertDetails] = useState();
+  const [refresh, setRefresh] = useState(null);
 
   const navigate = useNavigate();
 
@@ -49,6 +55,16 @@ export const Jobs = () => {
     pRequest({ url: '/jobs-review/pending' });
     dRequest({ url: '/jobs-review/declined' });
   }, []);
+
+  useEffect(() => {
+    if (refresh === true) {
+      setJobInView(null);
+      makeRequest({ url: '/jobs-review/approved' });
+      pRequest({ url: '/jobs-review/pending' });
+      dRequest({ url: '/jobs-review/declined' });
+    }
+    setRefresh(null);
+  }, [refresh]);
 
   useEffect(() => {
     // console.log(jobs);
@@ -91,6 +107,45 @@ export const Jobs = () => {
       ]);
     }
   }, [dSuccess, pSuccess, success]);
+
+  const otherRequests = useAxios();
+  const {
+    makeRequest: otherM,
+    isLoading: otherL,
+    setErrorMessage: otherEM,
+    errorMessage: otherE,
+    success: otherS,
+    data: otherR,
+  } = otherRequests();
+
+  const onJobDecide = (id, data, type) => {
+    if (type === 'approve') {
+      otherM({
+        url: `jobs-review/${id}/approve_job/`,
+        method: 'PUT',
+        payload: data,
+      });
+    }
+
+    if (type === 'decline') {
+      otherM({
+        url: `jobs-review/${id}/decline_job/`,
+        method: 'PUT',
+        payload: data,
+      });
+    }
+    otherEM(errorMessage);
+    console.log(otherE);
+    return;
+  };
+
+  useEffect(() => {
+    if (otherS) {
+      // console.log(response);
+      setRefresh(true);
+      return;
+    }
+  }, [otherR]);
 
   const handlePrevious = (status, link) => {
     console.log(status, link);
@@ -341,18 +396,104 @@ export const Jobs = () => {
               <div className='mt-[auto]'>
                 {jobInView.status === 'Pending' && (
                   <div className='flex flex-col gap-[4px] text-[#fff] mt-[25px] text-[8px] font-[700] leading-[10px]'>
-                    <button className='p-[6px] rounded-[4px] bg-[#00944D] border-[1.5px] border-solid border-[#00944D]'>
+                    <button
+                      className='p-[6px] rounded-[4px] bg-[#00944D] border-[1.5px] border-solid border-[#00944D]'
+                      onClick={() => {
+                        setAlertDetails({
+                          title: 'Approve Job',
+                          text: `Are you sure you want to approve ${jobInView.job.title}?`,
+                          data: {
+                            id: jobInView.job.id,
+                            data: { ...jobInView, status: 'approved' },
+                            type: 'approve',
+                          },
+                        });
+                        setShowAlert(true);
+                      }}
+                    >
                       Approve
                     </button>
-                    <button className='p-[6px] rounded-[4px] text-[#C90415]  border-[1.5px] border-solid border-[#C90415]'>
+                    <button
+                      className='p-[6px] rounded-[4px] text-[#C90415]  border-[1.5px] border-solid border-[#C90415]'
+                      onClick={() => {
+                        setAlertDetails({
+                          title: 'Decline Job',
+                          text: `Are you sure you want to decline ${jobInView.job.title}?`,
+                          data: {
+                            id: jobInView.job.id,
+                            data: { ...jobInView, status: 'declined' },
+                            type: 'decline',
+                          },
+                        });
+                        setShowAlert(true);
+                      }}
+                    >
                       Decline
+                    </button>
+                  </div>
+                )}
+
+                {jobInView.status === 'Approved' && (
+                  <div className='flex flex-col gap-[4px] text-[#fff] mt-[25px] text-[8px] font-[700] leading-[10px]'>
+                    <button
+                      className='p-[6px] rounded-[4px] text-[#C90415]  border-[1.5px] border-solid border-[#C90415]'
+                      onClick={() => {
+                        setAlertDetails({
+                          title: 'Decline Job',
+                          text: `Are you sure you want to decline ${jobInView.job.title}?`,
+                          data: {
+                            id: jobInView.job.id,
+                            data: { ...jobInView, status: 'declined' },
+                            type: 'decline',
+                          },
+                        });
+                        setShowAlert(true);
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                )}
+
+                {jobInView.status === 'Declined' && (
+                  <div className='flex flex-col gap-[4px] text-[#fff] mt-[25px] text-[8px] font-[700] leading-[10px]'>
+                    <button
+                      className='p-[6px] rounded-[4px] bg-[#00944D] border-[1.5px] border-solid border-[#00944D]'
+                      onClick={() => {
+                        setAlertDetails({
+                          title: 'Approve Job',
+                          text: `Are you sure you want to approve ${jobInView.job.title}?`,
+                          data: {
+                            id: jobInView.job.id,
+                            data: { ...jobInView, status: 'approved' },
+                            type: 'approve',
+                          },
+                        });
+                        setShowAlert(true);
+                      }}
+                    >
+                      Approve
                     </button>
                   </div>
                 )}
 
                 {jobInView.status === 'Reported' && (
                   <div className='flex flex-col gap-[4px] text-[#fff] mt-[25px] text-[8px] font-[700] leading-[10px]'>
-                    <button className='bg-[#C90415] rounded-[4px] p-[7px]'>
+                    <button
+                      className='bg-[#C90415] rounded-[4px] p-[7px]'
+                      onClick={() => {
+                        setAlertDetails({
+                          title: 'Delete Job',
+                          text: `Are you sure you want to delete ${jobInView.job.title}?`,
+                          data: {
+                            id: jobInView.job.id,
+                            data: { ...jobInView, status: 'delete' },
+                            type: 'delete',
+                          },
+                        });
+                        setShowAlert(true);
+                      }}
+                    >
                       Delete
                     </button>
                     <button className='text-[#303030] bg-[#e6e6e6] p-[7px] rounded-[4px]'>
@@ -361,6 +502,35 @@ export const Jobs = () => {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {showAlert && (
+            <div className='fixed top-[0] right-[0] bottom-[0] left-[255px] flex justify-center items-center bg-[#918a8a61]'>
+              <div>
+                <Alert
+                  title={alertDetails.title}
+                  text={alertDetails.text}
+                  setIsPositive={setIsPositive}
+                  callBack={(type) => {
+                    console.log(type);
+                    setShowAlert(false);
+                    if (type === 'yes') {
+                      onJobDecide(
+                        alertDetails.data.id,
+                        alertDetails.data.data,
+                        alertDetails.data.type
+                      );
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          {otherL && (
+            <div className='w-full h-full bg-transparent'>
+              <LoadingIndicator />
             </div>
           )}
         </div>
