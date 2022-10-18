@@ -13,6 +13,15 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
   const [verifiedTableData, setVerifiedTableData] = useState(null);
   const [declinedTableData, setDeclinedTableData] = useState(null);
   const [refresh, setRefresh] = useState(null);
+  const [pageState, setPageState] = useState({
+    isLoading: true,
+    data: [],
+    total: 0,
+    page: 1,
+    pageSize: 1,
+    firstTime: false,
+  });
+  const [option, setOption] = useState(null);
   const getPendingData = useAxios();
   const getVerifiedData = useAxios();
   const getDeclinedData = useAxios();
@@ -48,36 +57,74 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
     setRefresh(null);
   }, [refresh]);
 
-  useEffect(() => {
-    getData();
-  }, []);
-
   const getData = () => {
     makeDeclinedRequest({
       url: `/${
         title === 'Jobseekers Documents'
           ? 'jobseekers/user-profile-review'
           : 'employer/user-profile-review'
-      }/declined`,
+      }/declined?page=${pageState.page}`,
     });
     makePendingRequest({
       url: `/${
         title === 'Jobseekers Documents'
           ? 'jobseekers/user-profile-review'
           : 'employer/user-profile-review'
-      }/pending`,
+      }/pending?page=${pageState.page}`,
     });
     makeVerifiedRequest({
       url: `/${
         title === 'Jobseekers Documents'
           ? 'jobseekers/user-profile-review'
           : 'employer/user-profile-review'
-      }/verified/`,
+      }/verified?page=${pageState.page}`,
     });
   };
 
   useEffect(() => {
+    setPageState((old) => ({
+      ...old,
+      isLoading: true,
+      firstTime: false,
+    }));
+    if (option) {
+      if (option.text === 'pending') {
+        makePendingRequest({
+          url: `/${
+            title === 'Jobseekers Documents'
+              ? 'jobseekers/user-profile-review'
+              : 'employer/user-profile-review'
+          }/pending?page=${pageState.page}`,
+        });
+      } else if (option.text === 'declined') {
+        makeDeclinedRequest({
+          url: `/${
+            title === 'Jobseekers Documents'
+              ? 'jobseekers/user-profile-review'
+              : 'employer/user-profile-review'
+          }/declined?page=${pageState.page}`,
+        });
+      } else if (option.text === 'verified') {
+        makeVerifiedRequest({
+          url: `/${
+            title === 'Jobseekers Documents'
+              ? 'jobseekers/user-profile-review'
+              : 'employer/user-profile-review'
+          }/verified?page=${pageState.page}`,
+        });
+      }
+    } else {
+      getData();
+    }
+  }, [pageState.page, pageState.pageSize]);
+
+  useEffect(() => {
     if (pendingSuccess) {
+      setPageState((old) => ({
+        ...old,
+        isLoading: false,
+        firstTime: false,
+      }));
       console.log(pendingData);
       if (title === 'Jobseekers Documents') {
         const newData = pendingData?.results.map((data, index) => {
@@ -102,8 +149,12 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
-            col3: data.cv[0] || data.cv || 'nothing to show',
-            col4: data.credentials || 'nothing to show',
+            col3: data.cv
+              ? data.cv[0] || data?.cv || 'nothing to show'
+              : 'nothing to show',
+            col4: data
+              ? data?.credentials || 'nothing to show'
+              : 'nothing to show',
           };
         });
 
@@ -115,6 +166,11 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
   useEffect(() => {
     if (verifiedSuccess) {
       console.log(verifiedData);
+      setPageState((old) => ({
+        ...old,
+        isLoading: false,
+        firstTime: false,
+      }));
 
       if (title === 'Jobseekers Documents') {
         const newData = verifiedData?.results.map((data, index) => {
@@ -139,8 +195,12 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
-            col3: data.cv[0] || data.cv || 'nothing to show',
-            col4: data.credentials || 'nothing to show',
+            col3: data.cv
+              ? data.cv[0] || data?.cv || 'nothing to show'
+              : 'nothing to show',
+            col4: data
+              ? data?.credentials || 'nothing to show'
+              : 'nothing to show',
           };
         });
 
@@ -151,6 +211,11 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
 
   useEffect(() => {
     if (declinedSuccess) {
+      setPageState((old) => ({
+        ...old,
+        isLoading: false,
+        firstTime: false,
+      }));
       console.log(declinedData);
       if (title === 'Jobseekers Documents') {
         const newData = declinedData?.results.map((data, index) => {
@@ -167,18 +232,23 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         });
         setDeclinedTableData({ data: newData, count: declinedData.count });
       } else {
-        const newData = declinedData?.results.map((data, index) => {
-          return {
-            id: index + 1,
-            col1: data.id,
-            col2:
-              `${data.user.first_name ? data.user.first_name : ''} ${
-                data.user.last_name ? data.user.last_name : ''
-              }` || 'nothing to show',
-            col3: data.cv[0] || data.cv || 'nothing to show',
-            col4: data.credentials || 'nothing to show',
-          };
-        });
+        const newData =
+          declinedData?.results.map((data, index) => {
+            return {
+              id: index + 1,
+              col1: data.id,
+              col2:
+                `${data.user.first_name ? data.user.first_name : ''} ${
+                  data.user.last_name ? data.user.last_name : ''
+                }` || 'nothing to show',
+              col3: data.cv
+                ? data.cv[0] || data?.cv || 'nothing to show'
+                : 'nothing to show',
+              col4: data
+                ? data?.credentials || 'nothing to show'
+                : 'nothing to show',
+            };
+          }) || [];
 
         setDeclinedTableData({ data: newData, count: declinedData.count });
       }
@@ -232,6 +302,15 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
                 tableToDisplay === option.text
                   ? setTableToDisplay(null)
                   : setTableToDisplay(option.text);
+
+                setPageState((old) => ({
+                  ...old,
+                  isLoading: false,
+                  data: option.data?.data || [],
+                  total: option.data?.count || 0,
+                  pageSize: option.data?.data.length || 1,
+                }));
+                setOption(option);
               }}
             >
               <p className='text-[#000] text-[14px] font-[700] leading-[18px]'>
@@ -247,6 +326,8 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
                   <JobseekersEmployeesDocument
                     tableData={option.data}
                     setRefresh={setRefresh}
+                    pageState={pageState}
+                    setPageState={setPageState}
                   />
                 </>
               ) : (

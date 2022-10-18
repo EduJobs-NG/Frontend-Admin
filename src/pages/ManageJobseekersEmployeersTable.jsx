@@ -35,33 +35,16 @@ function QuickSearchToolbar() {
 }
 
 export const ManageJobseekersEmployeersTable = ({
-  tableData,
   title,
   setRefetch,
+  pageState,
+  setPageState,
 }) => {
   const [toDeleteDetail, setToDeleteDetail] = useState(null);
   const [isPositive, setIsPositive] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
 
-  const [pageState, setPageState] = useState({
-    isLoading: true,
-    data: [],
-    total: 0,
-    page: 1,
-    pageSize: 10,
-  });
-
   const deleteData = useAxios();
-  const getData = useAxios();
-
-  useEffect(() => {
-    setPageState((old) => ({
-      ...old,
-      isLoading: false,
-      data: tableData.data,
-      total: tableData.count,
-    }));
-  }, [pageState.page, pageState.pageSize]);
 
   const columns = [
     { field: 'col1', headerName: 'id', width: 70 },
@@ -161,17 +144,21 @@ export const ManageJobseekersEmployeersTable = ({
         rows={pageState.data}
         rowCount={pageState.total}
         loading={pageState.isLoading}
-        rowsPerPageOptions={[10]}
         pagination
-        page={pageState.page}
+        page={pageState.page - 1}
         pageSize={pageState.pageSize}
         paginationMode='server'
-        onPageChange={(newPage) =>
-          setPageState((old) => ({ ...old, page: newPage }))
-        }
-        onPageSizeChange={(newPageSize) =>
-          setPageState((old) => ({ ...old, pageSize: newPageSize }))
-        }
+        onPageChange={(newPage, details) => {
+          console.log(details, newPage);
+          setPageState((old) => ({
+            ...old,
+            page: newPage + 1,
+          }));
+        }}
+        onPageSizeChange={(newPageSize, details) => {
+          console.log(details, newPageSize);
+          setPageState((old) => ({ ...old, pageSize: newPageSize }));
+        }}
         columns={columns}
         initialState={{
           filter: {
