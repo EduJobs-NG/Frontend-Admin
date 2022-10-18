@@ -7,6 +7,15 @@ import { ManageJobseekersEmployeersTable } from './ManageJobseekersEmployeersTab
 export const ManageJobseekersEmployeers = ({ title }) => {
   const [tableData, setTableData] = useState(null);
   const [refetch, setRefetch] = useState(false);
+  const [pageState, setPageState] = useState({
+    isLoading: true,
+    data: [],
+    total: 0,
+    page: 1,
+    pageSize: 1,
+    track: 1,
+    firstTime: false,
+  });
   const getData = useAxios();
   const {
     makeRequest,
@@ -20,23 +29,27 @@ export const ManageJobseekersEmployeers = ({ title }) => {
     makeRequest({
       url:
         title === 'Manage Jobseekers'
-          ? '/jobseekers/user-profile-review/'
-          : '/employer/user-profile-review/',
+          ? `/jobseekers/user-profile-review?page=${pageState.page}`
+          : `/employer/user-profile-review?page=${pageState.page}`,
     });
   }, [refetch]);
 
   useEffect(() => {
+    setPageState((old) => ({
+      ...old,
+      isLoading: true,
+      firstTime: false,
+    }));
     makeRequest({
       url:
         title === 'Manage Jobseekers'
-          ? '/jobseekers/user-profile-review/'
-          : '/employer/user-profile-review/',
+          ? `/jobseekers/user-profile-review?page=${pageState.page}`
+          : `/employer/user-profile-review?page=${pageState.page}`,
     });
-  }, []);
+  }, [pageState.page, pageState.pageSize]);
 
   useEffect(() => {
     if (success) {
-      console.log(gottenData);
       const newData = gottenData?.results?.map((data, index) => {
         // console.log(data);
         return {
@@ -59,6 +72,18 @@ export const ManageJobseekersEmployeers = ({ title }) => {
     }
   }, [success]);
 
+  useEffect(() => {
+    if (tableData) {
+      setPageState((old) => ({
+        ...old,
+        isLoading: false,
+        data: tableData.data,
+        total: tableData.count,
+        pageSize: tableData.data.length,
+      }));
+    }
+  }, [tableData]);
+
   if (isLoading) return <LoadingIndicator />;
   if (errorMessage) return <ErrorIndicator error={errorMessage} />;
 
@@ -69,11 +94,13 @@ export const ManageJobseekersEmployeers = ({ title }) => {
 
   return tableData !== null ? (
     <>
-      {console.log(tableData)}
+      {/* {console.log(tableData)} */}
       <ManageJobseekersEmployeersTable
         tableData={tableData}
         title={title}
         setRefetch={setRefetch}
+        pageState={pageState}
+        setPageState={setPageState}
       />
     </>
   ) : (

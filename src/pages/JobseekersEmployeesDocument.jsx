@@ -9,26 +9,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import useAxios from '../hooks/useAxios';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 
-export const JobseekersEmployeesDocument = ({ tableData, setRefresh }) => {
+export const JobseekersEmployeesDocument = ({
+  setRefresh,
+  pageState,
+  setPageState,
+}) => {
   const [isPositive, setIsPositive] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertDetails, setAlertDetails] = useState();
-  const [pageState, setPageState] = useState({
-    isLoading: true,
-    data: [],
-    total: 0,
-    page: 1,
-    pageSize: 10,
-  });
-
-  useEffect(() => {
-    setPageState((old) => ({
-      ...old,
-      isLoading: false,
-      data: tableData.data,
-      total: tableData.count,
-    }));
-  }, [pageState.page, pageState.pageSize]);
 
   const request = useAxios();
 
@@ -57,6 +45,19 @@ export const JobseekersEmployeesDocument = ({ tableData, setRefresh }) => {
         payload: data,
       });
     }
+    setErrorMessage(errorMessage);
+    console.log(errorMessage);
+    return;
+  };
+
+  const onProfileDec = (id, data) => {
+    console.log(data);
+    makeRequest({
+      url: `jobseekers/user-profile-review/${id}`,
+      method: 'PUT',
+      payload: data,
+    });
+
     setErrorMessage(errorMessage);
     console.log(errorMessage);
     return;
@@ -199,7 +200,7 @@ export const JobseekersEmployeesDocument = ({ tableData, setRefresh }) => {
       width: 120,
       sortable: false,
       renderCell: (params) => {
-        const onClick = (e) => {
+        const onClick = (e, type) => {
           e.stopPropagation(); // don't select this row after clicking
 
           const api = params.api;
@@ -211,13 +212,25 @@ export const JobseekersEmployeesDocument = ({ tableData, setRefresh }) => {
             .forEach(
               (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
             );
-
-          return handleDeleteConfirmation(thisRow);
+          // console.log(thisRow);
+          const data = {
+            reviewed: type,
+          };
+          setAlertDetails({
+            title: `${type} User`,
+            text: `Are you sure you want to ${type} ${thisRow.col2}?`,
+            data: { id: thisRow.col1, data, type: 'profile' },
+          });
+          setShowAlert(true);
+          return;
         };
 
         return (
           <div className='flex items-center gap-[11px] text-[10px] font-[700] leading-6'>
-            <button className='flex items-center gap-[5px] text-[#00944D]'>
+            <button
+              onClick={(e) => onClick(e, 'verified')}
+              className='flex items-center gap-[5px] text-[#00944D]'
+            >
               <img src={verify} alt='chat-icon' />
               <span>Verify</span>
             </button>
@@ -244,13 +257,12 @@ export const JobseekersEmployeesDocument = ({ tableData, setRefresh }) => {
         rows={pageState.data}
         rowCount={pageState.total}
         loading={pageState.isLoading}
-        rowsPerPageOptions={[10]}
         pagination
-        page={pageState.page}
+        page={pageState.page - 1}
         pageSize={pageState.pageSize}
         paginationMode='server'
         onPageChange={(newPage) =>
-          setPageState((old) => ({ ...old, page: newPage }))
+          setPageState((old) => ({ ...old, page: newPage + 1 }))
         }
         onPageSizeChange={(newPageSize) =>
           setPageState((old) => ({ ...old, pageSize: newPageSize }))
@@ -271,11 +283,16 @@ export const JobseekersEmployeesDocument = ({ tableData, setRefresh }) => {
                 console.log(type);
                 setShowAlert(false);
                 if (type === 'yes') {
-                  onCertDecide(
-                    alertDetails.data.id,
-                    alertDetails.data.data,
-                    alertDetails.data.type
-                  );
+                  if (alertDetails.data.type === 'profile') {
+                    onProfileDec(alertDetails.data.id, alertDetails.data.data);
+                    return;
+                  } else {
+                    onCertDecide(
+                      alertDetails.data.id,
+                      alertDetails.data.data,
+                      alertDetails.data.type || ''
+                    );
+                  }
                 }
               }}
             />
