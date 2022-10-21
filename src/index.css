@@ -20,6 +20,20 @@ body {
   background: #c9deff;
 }
 
+.css-1e2bxag-MuiDataGrid-root
+  .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)
+  > .MuiDataGrid-cell {
+  border-right: 1px solid black;
+}
+
+.css-1e2bxag-MuiDataGrid-root .MuiDataGrid-columnHeader {
+  border-right: 1px solid black;
+}
+
+.css-1e2bxag-MuiDataGrid-root .MuiDataGrid-cell {
+  border-right: 1px solid black;
+}
+
 /* //MUI v5 (notice the class name difference)
 "& .MuiDataGrid-virtualScrollerRenderZone": {
   "& .MuiDataGrid-row": {
