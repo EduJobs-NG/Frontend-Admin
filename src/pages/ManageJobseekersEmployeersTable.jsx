@@ -47,14 +47,15 @@ export const ManageJobseekersEmployeersTable = ({
   const deleteData = useAxios();
 
   const columns = [
-    { field: 'col1', headerName: 'id', width: 70 },
-    { field: 'col2', headerName: 'name', width: 170 },
-    { field: 'col3', headerName: 'email', width: 170 },
-    { field: 'col4', headerName: 'number', width: 170 },
+    { field: 'col1', headerName: 'id', minWidth: 70, flex: 1 },
+    { field: 'col2', headerName: 'name', minWidth: 170, flex: 1 },
+    { field: 'col3', headerName: 'email', minWidth: 170, flex: 1 },
+    { field: 'col4', headerName: 'number', minWidth: 170, flex: 1 },
     {
       field: 'col5',
       headerName: 'action',
-      width: 150,
+      minWidth: 150,
+      flex: 1,
       sortable: false,
       renderCell: (params) => {
         const onClick = (e) => {
