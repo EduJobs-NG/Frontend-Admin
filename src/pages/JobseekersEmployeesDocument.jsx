@@ -72,13 +72,15 @@ export const JobseekersEmployeesDocument = ({
   }, [response]);
 
   const columns = [
-    { field: 'col1', headerName: 'id', width: 70 },
-    { field: 'col2', headerName: 'name', width: 170 },
+    { field: 'col1', headerName: 'id', minWidth: 70, flex: 1 },
+    { field: 'col2', headerName: 'name', minWidth: 170, flex: 1 },
+
     {
       field: 'col3',
       headerName: 'cv/resume',
-      width: 190,
+      minWidth: 190,
       sortable: false,
+      flex: 1,
       renderCell: (params) => {
         return (
           <div className='flex flex-row gap-2'>
@@ -121,7 +123,8 @@ export const JobseekersEmployeesDocument = ({
     {
       field: 'col4',
       headerName: 'certificates',
-      width: 210,
+      minWidth: 210,
+      flex: 1,
       sortable: false,
       renderCell: (params) => (
         <ul className='flex flex-col gap-2 py-1'>
@@ -197,7 +200,8 @@ export const JobseekersEmployeesDocument = ({
     {
       field: 'col5',
       headerName: 'action',
-      width: 120,
+      minWidth: 120,
+      flex: 1,
       sortable: false,
       renderCell: (params) => {
         const onClick = (e, type) => {
