@@ -125,8 +125,8 @@ export const ManageJobseekersEmployeersTable = ({
   }, [success]);
 
   const handleDeleteConfirmation = (detail) => {
-    setToDeleteDetail({ id: detail.col1, data: detail });
-    console.log(detail.col1);
+    setToDeleteDetail({ id: detail.col5, data: detail });
+    console.log(detail.col5);
     setShowAlert(true);
   };
 
