@@ -82,6 +82,7 @@ export const JobseekersEmployeesDocument = ({
       sortable: false,
       flex: 1,
       renderCell: (params) => {
+        // console.log(params);
         return (
           <div className='flex flex-row gap-2'>
             <div className='hover:cursor-pointer flex flex-row gap-2 items-center'>
@@ -102,7 +103,22 @@ export const JobseekersEmployeesDocument = ({
             </div>
             {params.value === 'nothing to show' ? null : (
               <div className='flex items-center gap-[11px] text-[10px] font-[700] leading-6'>
-                <button className='flex items-center gap-[5px] text-[#00944D]'>
+                <button
+                  className='flex items-center gap-[5px] text-[#00944D]'
+                  onClick={() => {
+                    const data = {
+                      ...params.value,
+                      reviewed: 'verified',
+                      type: 'cv',
+                    };
+                    setAlertDetails({
+                      title: 'Verify Document',
+                      text: `Are you sure you want to verify ${params.value?.file}?`,
+                      data: { id: params.value.id, data, type: 'verify' },
+                    });
+                    setShowAlert(true);
+                  }}
+                >
                   <img src={verify} alt='chat-icon' />
                   <span>Verify</span>
                 </button>
@@ -205,6 +221,7 @@ export const JobseekersEmployeesDocument = ({
       sortable: false,
       renderCell: (params) => {
         const onClick = (e, type) => {
+          // console.log(type);
           e.stopPropagation(); // don't select this row after clicking
 
           const api = params.api;
@@ -216,14 +233,13 @@ export const JobseekersEmployeesDocument = ({
             .forEach(
               (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
             );
-          // console.log(thisRow);
           const data = {
             reviewed: type,
           };
           setAlertDetails({
             title: `${type} User`,
             text: `Are you sure you want to ${type} ${thisRow.col2}?`,
-            data: { id: thisRow.col1, data, type: 'profile' },
+            data: { id: thisRow.col5, data, type: 'profile' },
           });
           setShowAlert(true);
           return;

@@ -51,14 +51,17 @@ export const ManageJobseekersEmployeers = ({ title }) => {
   useEffect(() => {
     if (success) {
       const newData = gottenData?.results?.map((data, index) => {
-        // console.log(data);
+        console.log(data);
         return {
           id: data.id,
-          col1: data.id,
-          col2: data.user?.first_name || data.name || 'nothing to show',
+          col1: index + 1,
+          col2:
+            `${data.user.first_name ? data.user.first_name : ''} ${
+              data.user.last_name ? data.user.last_name : ''
+            }` || 'nothing to show',
           col3: data.user?.email || 'nothing to show',
           col4: data?.phone_number || 'nothing to show',
-          col5: '',
+          col5: data.id,
         };
       });
 

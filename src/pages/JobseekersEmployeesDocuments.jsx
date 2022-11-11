@@ -130,13 +130,14 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = pendingData?.results.map((data, index) => {
           return {
             id: index + 1,
-            col1: data.id,
+            col1: index + 1,
             col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
-            col3: data.cv?.file || 'nothing to show',
+            col3: data.cv || 'nothing to show',
             col4: data.credentials || 'nothing to show',
+            col5: data.id,
           };
         });
         setPendingTableData({ data: newData, count: pendingData.count });
@@ -144,7 +145,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = pendingData?.results.map((data, index) => {
           return {
             id: index + 1,
-            col1: data.id,
+            col1: index + 1,
             col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
@@ -155,6 +156,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
             col4: data
               ? data?.credentials || 'nothing to show'
               : 'nothing to show',
+            col5: data.id,
           };
         });
 
@@ -176,13 +178,14 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = verifiedData?.results.map((data, index) => {
           return {
             id: index + 1,
-            col1: data.id,
+            col1: index + 1,
             col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
             col3: data.cv?.file || 'nothing to show',
             col4: data.credentials || 'nothing to show',
+            col5: data.id,
           };
         });
         setVerifiedTableData({ data: newData, count: verifiedData.count });
@@ -190,7 +193,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = verifiedData?.results.map((data, index) => {
           return {
             id: index + 1,
-            col1: data.id,
+            col1: index + 1,
             col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
@@ -201,6 +204,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
             col4: data
               ? data?.credentials || 'nothing to show'
               : 'nothing to show',
+            col5: data.id,
           };
         });
 
@@ -221,13 +225,14 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
         const newData = declinedData?.results.map((data, index) => {
           return {
             id: index + 1,
-            col1: data.id,
+            col1: index + 1,
             col2:
               `${data.user.first_name ? data.user.first_name : ''} ${
                 data.user.last_name ? data.user.last_name : ''
               }` || 'nothing to show',
             col3: data.cv?.file || 'nothing to show',
             col4: data.credentials || 'nothing to show',
+            col5: data.id,
           };
         });
         setDeclinedTableData({ data: newData, count: declinedData.count });
@@ -236,7 +241,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
           declinedData?.results.map((data, index) => {
             return {
               id: index + 1,
-              col1: data.id,
+              col1: index + 1,
               col2:
                 `${data.user.first_name ? data.user.first_name : ''} ${
                   data.user.last_name ? data.user.last_name : ''
@@ -247,6 +252,7 @@ export const JobseekersEmployeesDocuments = ({ title }) => {
               col4: data
                 ? data?.credentials || 'nothing to show'
                 : 'nothing to show',
+              col5: data.id,
             };
           }) || [];
 
