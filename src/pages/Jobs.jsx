@@ -172,12 +172,12 @@ export const Jobs = () => {
         if (!page) {
           // console.log(page);
           // console.log('no page');
-          pRequest({ url: `/jobs-review/approved` });
+          makeRequest({ url: `/jobs-review/approved` });
           return;
         }
 
         page = page.trim();
-        pRequest({ url: `/jobs-review/approved/?${page}` });
+        makeRequest({ url: `/jobs-review/approved/?${page}` });
         return;
       } catch (e) {
         console.log(e);
@@ -189,12 +189,12 @@ export const Jobs = () => {
         if (!page) {
           // console.log(page);
           // console.log('no page');
-          pRequest({ url: `/jobs-review/declined` });
+          dRequest({ url: `/jobs-review/declined` });
           return;
         }
 
         page = page.trim();
-        pRequest({ url: `/jobs-review/declined/?${page}` });
+        dRequest({ url: `/jobs-review/declined/?${page}` });
         return;
       } catch (e) {
         console.log(e);
@@ -211,12 +211,12 @@ export const Jobs = () => {
     }
     if (status === 'Approved') {
       const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/approved/?${page}` });
+      makeRequest({ url: `/jobs-review/approved/?${page}` });
       return;
     }
     if (status === 'Declined') {
       const page = link.split('?')[1].trim();
-      pRequest({ url: `/jobs-review/declined/?${page}` });
+      dRequest({ url: `/jobs-review/declined/?${page}` });
       return;
     }
   };
