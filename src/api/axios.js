@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const BASE_URL = "https://edujobsng.up.railway.app/api/v1/admin";
+const BASE_URL = 'https://api.edujobsng.com/api/v1/admin';
 
 export default axios.create({
   baseURL: BASE_URL,
@@ -8,5 +8,5 @@ export default axios.create({
 
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
 });
